@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, HelpCircle } from "lucide-react"
 
 const FAQ = ({ darkMode }) => {
-    const [openIndex, setOpenIndex] = useState(-1)
+    const [openIndex, setOpenIndex] = useState(0)
 
     const faqs = [
         {
@@ -34,28 +34,44 @@ const FAQ = ({ darkMode }) => {
     ]
 
     return (
-        <section className="py-20" style={{ backgroundColor: darkMode ? "#1e293b" : "#f8fafc" }}>
+        <section
+            className="py-12 sm:py-16 md:py-20 overflow-hidden"
+            style={{ backgroundColor: darkMode ? "#1e293b" : "#f8fafc" }}
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-5 gap-12">
-                    {/* Left - Heading */}
+                <div className="grid lg:grid-cols-5 gap-8 md:gap-12">
+                    {/* Left - Heading with Image */}
                     <div className="lg:col-span-2 space-y-6">
                         <div className="text-teal-500 text-sm font-semibold tracking-wider uppercase">FAQ</div>
                         <h2
-                            className={`text-4xl md:text-5xl font-bold leading-tight ${darkMode ? "text-white" : "text-slate-900"}`}
+                            className={`text-3xl sm:text-4xl md:text-5xl font-bold leading-tight ${darkMode ? "text-white" : "text-slate-900"}`}
                         >
                             Frequently Asked Questions
                         </h2>
-                        <p className={`text-lg ${darkMode ? "text-gray-400" : "text-slate-600"}`}>
+                        <p className={`text-base sm:text-lg ${darkMode ? "text-gray-400" : "text-slate-600"}`}>
                             Find answers to common questions about our services and how we can help your business grow.
                         </p>
 
+                        {/* Image Placeholder */}
+                        <div className="relative rounded-2xl overflow-hidden shadow-xl mt-6 sm:mt-8">
+                            <img src="/customer-support-team.png" alt="FAQ Support" className="w-full h-48 sm:h-64 object-cover" />
+                            <div className="absolute inset-0 bg-linear-to-t from-teal-500/40 to-transparent"></div>
+
+                            {/* Floating Icon */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-2xl">
+                                    <HelpCircle className="text-teal-500" size={32} />
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Still have questions card */}
-                        <div className="bg-teal-500 rounded-2xl p-8 mt-8">
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Still have questions?</h3>
-                            <p className="text-slate-700 mb-6">
+                        <div className="bg-teal-500 rounded-2xl p-6 sm:p-8 mt-6 sm:mt-8">
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2 sm:mb-3">Still have questions?</h3>
+                            <p className="text-sm sm:text-base text-slate-700 mb-4 sm:mb-6">
                                 Can't find the answer you're looking for? Please chat with our friendly team.
                             </p>
-                            <button className="text-slate-900 font-medium flex items-center gap-2 hover:gap-3 transition-all">
+                            <button className="px-4 sm:px-6 py-2 sm:py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-all flex items-center gap-2 text-sm sm:text-base">
                                 Contact Support →
                             </button>
                         </div>
@@ -66,28 +82,41 @@ const FAQ = ({ darkMode }) => {
                         {faqs.map((faq, index) => (
                             <div
                                 key={index}
-                                className={`rounded-xl overflow-hidden ${darkMode ? "bg-slate-800/50 border border-gray-700/50" : "bg-white border border-slate-200 shadow-sm"
+                                className={`rounded-2xl overflow-hidden transition-all duration-300 ${openIndex === index
+                                        ? darkMode
+                                            ? "bg-slate-800 border-2 border-teal-500 shadow-lg shadow-teal-500/20"
+                                            : "bg-white border-2 border-teal-500 shadow-lg shadow-teal-500/20"
+                                        : darkMode
+                                            ? "bg-slate-800/50 border border-gray-700/50"
+                                            : "bg-white border border-slate-200 shadow-sm"
                                     }`}
                             >
                                 <button
                                     onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
-                                    className={`w-full px-6 py-5 flex items-center justify-between text-left transition-colors ${darkMode ? "hover:bg-slate-700/30" : "hover:bg-slate-50"
+                                    className={`w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left transition-colors ${darkMode ? "hover:bg-slate-700/30" : "hover:bg-slate-50"
                                         }`}
                                 >
-                                    <span className={`font-semibold pr-4 ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                    <span
+                                        className={`font-semibold pr-4 text-sm sm:text-base ${darkMode ? "text-white" : "text-slate-900"}`}
+                                    >
                                         {faq.question}
                                     </span>
-                                    <ChevronDown
-                                        className={`shrink-0 text-teal-500 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                                    <div
+                                        className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${openIndex === index ? "bg-teal-500 rotate-180" : darkMode ? "bg-slate-700" : "bg-slate-100"
                                             }`}
-                                        size={20}
-                                    />
+                                    >
+                                        <ChevronDown className={openIndex === index ? "text-white" : "text-teal-500"} size={18} />
+                                    </div>
                                 </button>
                                 <div
                                     className={`transition-all duration-300 overflow-hidden ${openIndex === index ? "max-h-96" : "max-h-0"
                                         }`}
                                 >
-                                    <div className={`px-6 pb-5 ${darkMode ? "text-gray-400" : "text-slate-600"}`}>{faq.answer}</div>
+                                    <div
+                                        className={`px-4 sm:px-6 pb-4 sm:pb-5 text-sm sm:text-base ${darkMode ? "text-gray-400" : "text-slate-600"}`}
+                                    >
+                                        {faq.answer}
+                                    </div>
                                 </div>
                             </div>
                         ))}

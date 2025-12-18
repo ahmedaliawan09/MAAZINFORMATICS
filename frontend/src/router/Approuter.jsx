@@ -17,6 +17,7 @@ import EPA from "../pages/Services/EPA"
 import ITServices from "../pages/Services/ITServices"
 import MedicalBilling from "../pages/Services/MedicalBilling"
 import Procurement from "../pages/Services/Procurement"
+import Careers from "../pages/careers/career";
 
 function Approuter() {
     const [darkMode, setDarkMode] = useState(false)
@@ -46,6 +47,7 @@ function Approuter() {
                     <Route path="/services/it-services" element={<ITServices darkMode={darkMode} />} />
                     <Route path="/about" element={<About darkMode={darkMode} />} />
                     <Route path="/contact" element={<Contact darkMode={darkMode} />} />
+                    <Route path="/career" element={<Careers darkMode={darkMode} />} />
                 </Routes>
                 <Footer darkMode={darkMode} />
             </div>

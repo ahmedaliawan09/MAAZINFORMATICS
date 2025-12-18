@@ -4,7 +4,6 @@ import Services from "../../components/Services"
 import Features from "../../components/Features"
 import FAQ from "../../components/FAQ"
 import Appointment from "../../components/Appointment"
-
 export default function Home({ darkMode }) {
     return (
         <>
