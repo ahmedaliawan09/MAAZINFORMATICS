@@ -1,263 +1,248 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Award, Trophy, Shield, Star, CheckCircle, TrendingUp } from "lucide-react"
-import { useState } from "react"
+import { Award, Trophy, Shield, Star, CheckCircle, ChevronRight } from "lucide-react"
 import customersatisfaction from "../../assets/images/customersatisfaction.png"
 import iso from "../../assets/images/ISO.png"
 import iso2 from "../../assets/images/ISO2.png"
 import psebaward from "../../assets/images/psebaward.png"
 import pioneer from "../../assets/images/pionee.png"
+import { useRef } from "react"
+import Navbar from "../../components/Navbar"
+export default function Achievements() {
+    const containerRef = useRef(null)
 
-export default function Achievements({ darkMode }) {
     const achievements = [
         {
             icon: Trophy,
             title: "Excellence Award for Top Position in ICT Internship Program",
-            description:
-                "Maaz Informatics earned the Top Position and the Excellence Award from Pakistan's Software Export Board (PSEB) for its pivotal role in the ICT Internship Program. Recognized for equipping emerging IT professionals with hands-on experience and bridging academia-industry gaps, we thank PSEB and recommit to advancing tech education, empowering youth, and boosting Pakistan's global tech leadership. Together, we're forging a stronger digital future.",
+            description: "Maaz Informatics earned the Top Position and the Excellence Award from Pakistan's Software Export Board (PSEB) for its pivotal role in the ICT Internship Program.",
             image: psebaward,
-            color: "teal",
             year: "2025",
+            color: "from-amber-500/10 to-amber-600/10",
+            iconColor: "text-amber-600"
         },
         {
             icon: Award,
             title: "Pioneering the Best Achievement at IT & ITeS Exports Awards",
-            description:
-                "We are delighted to announce that, as one of Pakistan's top-earning IT companies, we have been honored at the IT & ITeS Exports Awards Ceremony, graciously hosted by the Federal Minister of Information Technology & Telecommunication, along with Tech Destination Pakistan, and the Pakistan Software Houses Association. Over past 8 years, we have advanced from upholding no position to achieving an outstanding ranking in 2024, reflecting our growth and development in ICT sector.",
+            description: "We have been honored at the IT & ITeS Exports Awards Ceremony, graciously hosted by the Federal Minister of Information Technology & Telecommunication.",
             image: pioneer,
-            color: "orange",
             year: "2024",
+            color: "from-blue-500/10 to-blue-600/10",
+            iconColor: "text-blue-600"
         },
         {
             icon: Shield,
             title: "ISO/IEC 27001:2022 Certification for Information Security",
-            description:
-                "Robust information security is the foundation of success. Maaz Informatics has Achieved ISO/IEC 27001:2022 certification, which underscores its commitment to maintaining the highest standards in information security management. Our security policy is based on the principles of ISO/IEC 27001:2022, Aiming to provide clients with confidence in our dedication to protecting their sensitive data. We exceed industry standards to ensure secure software development, HR processes, patient data management, administrative functions, IT infrastructure, and customer services.",
+            description: "Maaz Informatics has Achieved ISO/IEC 27001:2022 certification, which underscores its commitment to maintaining the highest standards in information security management.",
             image: iso,
-            color: "teal",
             year: "2022",
+            color: "from-emerald-500/10 to-emerald-600/10",
+            iconColor: "text-emerald-600"
         },
         {
             icon: CheckCircle,
             title: "Upholding Privacy with ISO/IEC 27701:2019 Certification",
-            description:
-                "At Maaz Informatics, we prioritize the protection of personal data as a cornerstone of our operations. Our ISO/IEC 27701:2019 certification highlights our dedication to the highest standards of privacy and data protection. Aligned with ISO/IEC 27701:2019 principles, our privacy policy ensures robust management and protection of sensitive information, including strick HIPAA compliance for both employee and patient data, fostering trust and long-lasting relationships with our clients.",
+            description: "Our ISO/IEC 27701:2019 certification highlights our dedication to the highest standards of privacy and data protection, including strict HIPAA compliance.",
             image: iso2,
-            color: "orange",
             year: "2019",
+            color: "from-violet-500/10 to-violet-600/10",
+            iconColor: "text-violet-600"
         },
         {
             icon: Star,
             title: "Empowering Customer Satisfaction Through ISO 18295 Certification",
-            description:
-                "As we know, every successful partnership is built on trust. Maaz Informatics operates with transparency. Our ISO certification demonstrate that we uphold established rules and regulations, allowing our clients to see how we conduct our bussiness. At Maaz Informatics, we believe that satisfied customers are the foundation of the company's success. The ISO 18295 certification further demostrates our commitment to upholding the highest standards of customer service.",
+            description: "The ISO 18295 certification demonstrates our commitment to upholding the highest standards of customer service and operational transparency.",
             image: customersatisfaction,
-            color: "teal",
             year: "2023",
+            color: "from-rose-500/10 to-rose-600/10",
+            iconColor: "text-rose-600"
         },
     ]
 
+    const stats = [
+        { icon: Shield, value: "5+", label: "ISO Certifications", color: "text-emerald-700", border: "border-emerald-100" },
+        { icon: Award, value: "10+", label: "Industry Awards", color: "text-blue-700", border: "border-blue-100" },
+        { icon: CheckCircle, value: "100%", label: "Compliance Rate", color: "text-violet-700", border: "border-violet-100" },
+        { icon: Star, value: "99.9%", label: "Client Satisfaction", color: "text-rose-700", border: "border-rose-100" },
+    ]
+
     return (
-        <div
-            className="min-h-screen pt-24 pb-24 relative overflow-hidden"
-            style={{ backgroundColor: darkMode ? "#1e293b" : "#f8fafc" }}
-        >
-            {/* Background Decorations */}
-            <div className="absolute top-20 -left-40 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-20 -right-40 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl" />
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                {/* Hero Section */}
-                <motion.div
-                    initial={{ y: 30, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
-                >
-                    <div className="inline-block mb-4">
-                        <span className="text-orange-500 text-sm font-semibold tracking-wider uppercase px-4 py-2 bg-orange-500/10 rounded-full">
-                            Our Achievements
-                        </span>
-                    </div>
-                    <h1
-                        className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 ${darkMode ? "text-white" : "text-slate-900"}`}
+        <>
+            <Navbar />
+            <div ref={containerRef} className="min-h-screen py-20 bg-white">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-center mb-16"
                     >
-                        Excellence & Recognition
-                    </h1>
-                    <p className={`text-lg md:text-xl max-w-3xl mx-auto ${darkMode ? "text-gray-400" : "text-slate-600"}`}>
-                        By achieving ISO certification, we aim to enhance our clients' confidence in our commitment to exceptional
-                        customer service.
-                    </p>
-                </motion.div>
+                        <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-slate-50 border border-slate-200">
+                            <div className="w-2 h-2 rounded-full bg-slate-400" />
+                            <span className="text-sm font-medium text-slate-700 tracking-wider">
+                                RECOGNITIONS & AWARDS
+                            </span>
+                        </div>
 
-                {/* Achievements Grid */}
-                <div className="space-y-8 mb-20">
-                    {achievements.map((achievement, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ x: index % 2 === 0 ? -100 : 100, opacity: 0 }}
-                            whileInView={{ x: 0, opacity: 1 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.7, delay: index * 0.15 }}
-                            className={`flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-8 items-center`}
-                        >
-                            {/* Image Container - Display only, no click functionality */}
-                            <div className="w-full lg:w-2/5 relative group">
-                                <div className={`relative aspect-[3/4] ${darkMode ? "bg-slate-800/50 border border-gray-700/50" : "bg-white border border-slate-200 shadow-xl"
-                                    } rounded-3xl overflow-hidden`}>
-                                    <img
-                                        src={achievement.image || "/placeholder.svg?height=1200&width=900"}
-                                        alt={achievement.title}
-                                        className="w-full h-full object-contain p-4"
-                                    />
+                        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+                            Our Journey of
+                            <span className="block text-slate-800 mt-2">Excellence</span>
+                        </h1>
 
-                                    <div
-                                        className={`absolute inset-0 bg-gradient-to-t ${achievement.color === "teal"
-                                            ? "from-teal-900/10 via-transparent to-transparent"
-                                            : "from-orange-900/10 via-transparent to-transparent"
-                                            }`}
-                                    />
-
-                                    {/* Year Badge */}
-                                    <div
-                                        className={`absolute top-6 right-6 px-4 py-2 rounded-full text-sm font-bold shadow-xl ${achievement.color === "teal" ? "bg-teal-500 text-white" : "bg-orange-500 text-white"
-                                            }`}
-                                    >
-                                        {achievement.year}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Content Container */}
-                            <div className="w-full lg:w-3/5 space-y-6">
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    whileInView={{ y: 0, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.2 + index * 0.1 }}
-                                    className={`p-8 rounded-3xl ${darkMode
-                                        ? "bg-slate-800/70 border border-gray-700/50"
-                                        : "bg-white border border-slate-200 shadow-lg"
-                                        }`}
-                                >
-                                    {/* Icon */}
-                                    <motion.div
-                                        whileHover={{ rotate: 360, scale: 1.1 }}
-                                        transition={{ duration: 0.6 }}
-                                        className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg ${achievement.color === "teal"
-                                            ? "bg-teal-500 border-2 border-teal-400"
-                                            : "bg-orange-500 border-2 border-orange-400"
-                                            }`}
-                                    >
-                                        <achievement.icon className="text-white" size={32} />
-                                    </motion.div>
-
-                                    {/* Title */}
-                                    <h3
-                                        className={`text-2xl md:text-3xl font-bold mb-4 leading-tight ${darkMode ? "text-white" : "text-slate-900"
-                                            }`}
-                                    >
-                                        {achievement.title}
-                                    </h3>
-
-                                    {/* Decorative Line */}
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        whileInView={{ width: "100px" }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 0.8, delay: 0.3 + index * 0.1 }}
-                                        className={`h-1 rounded-full mb-6 ${achievement.color === "teal" ? "bg-teal-500" : "bg-orange-500"
-                                            }`}
-                                    />
-
-                                    {/* Description */}
-                                    <p
-                                        className={`text-base md:text-lg leading-relaxed ${darkMode ? "text-gray-300" : "text-slate-700"}`}
-                                    >
-                                        {achievement.description}
-                                    </p>
-
-                                    {/* Animated Stats Bar */}
-                                    <div className="mt-6 flex items-center gap-4">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            whileInView={{ width: "100%" }}
-                                            viewport={{ once: true }}
-                                            transition={{ duration: 1.2, delay: 0.5 + index * 0.1 }}
-                                            className={`h-2 rounded-full flex-1 ${achievement.color === "teal" ? "bg-teal-500/20" : "bg-orange-500/20"
-                                                }`}
-                                        >
-                                            <motion.div
-                                                initial={{ width: 0 }}
-                                                whileInView={{ width: "85%" }}
-                                                viewport={{ once: true }}
-                                                transition={{ duration: 1.5, delay: 0.7 + index * 0.1 }}
-                                                className={`h-full rounded-full ${achievement.color === "teal" ? "bg-teal-500" : "bg-orange-500"
-                                                    }`}
-                                            />
-                                        </motion.div>
-                                        <span
-                                            className={`text-sm font-semibold ${achievement.color === "teal" ? "text-teal-500" : "text-orange-500"
-                                                }`}
-                                        >
-                                            Verified
-                                        </span>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* Stats Section */}
-                <motion.div
-                    initial={{ y: 30, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className={`mt-20 rounded-3xl p-8 md:p-12 ${darkMode ? "bg-slate-800/50 border border-gray-700/50" : "bg-white shadow-xl"}`}
-                >
-                    <div className="text-center mb-12">
-                        <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}>
-                            Certification Impact
-                        </h2>
-                        <p className={`text-lg ${darkMode ? "text-gray-400" : "text-slate-600"}`}>
-                            Our certifications translate to tangible benefits
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            Recognized for excellence in quality, security, and customer satisfaction through industry-leading certifications.
                         </p>
-                    </div>
+                    </motion.div>
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            { icon: Shield, value: "5+", label: "ISO Certifications", color: "teal" },
-                            { icon: Award, value: "10+", label: "Industry Awards", color: "orange" },
-                            { icon: TrendingUp, value: "100%", label: "Compliance Rate", color: "teal" },
-                            { icon: CheckCircle, value: "99.9%", label: "Client Satisfaction", color: "orange" },
-                        ].map((stat, idx) => (
+                    {/* Stats - Compact Grid */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20"
+                    >
+                        {stats.map((stat, index) => (
                             <motion.div
-                                key={idx}
-                                whileHover={{ y: -10, scale: 1.05 }}
-                                transition={{ duration: 0.3 }}
-                                className={`p-6 rounded-2xl text-center ${darkMode ? "bg-slate-900/50" : "bg-slate-50"}`}
+                                key={index}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.3, delay: 0.1 * index }}
+                                whileHover={{ y: -2 }}
+                                className={`bg-white border ${stat.border} rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-200`}
                             >
-                                <stat.icon
-                                    className={`mx-auto mb-4 ${stat.color === "teal" ? "text-teal-500" : "text-orange-500"}`}
-                                    size={40}
-                                />
-                                <div
-                                    className={`text-3xl md:text-4xl font-bold mb-2 ${stat.color === "teal" ? "text-teal-500" : "text-orange-500"
-                                        }`}
-                                >
+                                <div className={`text-3xl font-bold mb-2 ${stat.color}`}>
                                     {stat.value}
                                 </div>
-                                <div className={`text-sm font-medium ${darkMode ? "text-gray-400" : "text-slate-600"}`}>
-                                    {stat.label}
-                                </div>
+                                <div className="text-sm text-slate-600 font-medium">{stat.label}</div>
                             </motion.div>
                         ))}
+                    </motion.div>
+
+                    {/* Achievements Timeline - Clean Design */}
+                    <div className="relative">
+                        {/* Vertical Timeline Line */}
+                        <div className="absolute left-8 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200" />
+
+                        <div className="space-y-12">
+                            {achievements.map((achievement, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                                    className="relative"
+                                >
+                                    {/* Timeline Dot */}
+                                    <div className="absolute left-6 md:left-1/2 md:-translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-slate-400 z-10" />
+
+                                    {/* Content Container */}
+                                    <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-start gap-8 ml-12 md:ml-0`}>
+                                        {/* Image Section */}
+                                        <div className="w-full md:w-2/5">
+                                            <motion.div
+                                                whileHover={{ scale: 1.02 }}
+                                                className="relative"
+                                            >
+                                                <img
+                                                    src={achievement.image}
+                                                    alt={achievement.title}
+                                                    className="w-full max-w-sm mx-auto rounded-lg shadow-md object-cover aspect-[3/4]"
+                                                />
+                                                <div className={`absolute -inset-4 ${achievement.color} rounded-xl -z-10 blur-sm`} />
+
+                                                {/* Year Badge */}
+                                                <div className="absolute -top-3 -right-3">
+                                                    <div className="px-3 py-1.5 bg-white border border-slate-200 rounded-full shadow-sm">
+                                                        <span className="text-xs font-semibold text-slate-700">
+                                                            {achievement.year}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        </div>
+
+                                        {/* Content Section */}
+                                        <div className="w-full md:w-3/5">
+                                            <motion.div
+                                                whileHover={{ x: index % 2 === 0 ? 4 : -4 }}
+                                                className="bg-white border border-slate-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200"
+                                            >
+                                                <div className="flex items-start gap-4 mb-4">
+                                                    <div className={`w-10 h-10 rounded-lg ${achievement.color} flex items-center justify-center flex-shrink-0`}>
+                                                        <achievement.icon className={`w-5 h-5 ${achievement.iconColor}`} />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-lg font-semibold text-slate-900 mb-2 leading-tight">
+                                                            {achievement.title}
+                                                        </h3>
+                                                        <div className="w-8 h-0.5 rounded-full bg-slate-200 mb-3" />
+                                                    </div>
+                                                </div>
+
+                                                <p className="text-slate-600 mb-4 leading-relaxed">
+                                                    {achievement.description}
+                                                </p>
+
+                                                <div className="flex items-center gap-2 text-sm text-slate-500">
+                                                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                                    <span>Certified & Verified</span>
+                                                </div>
+                                            </motion.div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
-                </motion.div>
+
+                    {/* Impact Section - Minimal */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="mt-24"
+                    >
+                        <div className="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-2xl p-8 md:p-12">
+                            <div className="max-w-3xl mx-auto text-center">
+                                <div className="inline-flex items-center gap-2 mb-6">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                                    <span className="text-sm font-medium text-slate-700 uppercase tracking-wider">
+                                        IMPACT & BENEFITS
+                                    </span>
+                                </div>
+
+                                <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">
+                                    Driving Value Through Certification
+                                </h2>
+
+                                <p className="text-slate-600 mb-8 leading-relaxed">
+                                    Our certifications translate to tangible benefits that directly impact client success and operational excellence.
+                                </p>
+
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    {["Enhanced Security", "Regulatory Compliance", "Quality Assurance", "Client Confidence"].map((item, idx) => (
+                                        <motion.div
+                                            key={idx}
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.3, delay: idx * 0.1 }}
+                                            whileHover={{ scale: 1.05 }}
+                                            className="px-4 py-3 bg-white border border-slate-200 rounded-lg shadow-xs hover:shadow-sm transition-all duration-200"
+                                        >
+                                            <span className="text-sm font-medium text-slate-800">{item}</span>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
-        </div>
+        </>
     )
 }

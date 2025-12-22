@@ -35,7 +35,7 @@ function Approuter() {
     return (
         <Router>
             <div className={`min-h-screen transition-colors duration-500 ${darkMode ? "dark" : ""}`}>
-                <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+
                 <Routes>
                     <Route path="/" element={<Home darkMode={darkMode} />} />
                     <Route path="/services/medical-billing" element={<MedicalBilling darkMode={darkMode} />} />

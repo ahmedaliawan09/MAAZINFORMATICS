@@ -1,22 +1,16 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Package, Target, TrendingUp, Clock, Shield, CheckCircle, Truck, BarChart, Award } from "lucide-react"
-import useEmblaCarousel from "embla-carousel-react"
-import Autoplay from "embla-carousel-autoplay"
-import { useCallback, useEffect, useState } from "react"
-
+import { Package, Target, TrendingUp, Clock, Shield, CheckCircle, Truck, BarChart, Award, ChevronRight, Sparkles } from "lucide-react"
+import Navbar from "../../components/Navbar"
 export default function Procurement({ darkMode }) {
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 3500 })])
-    const [selectedIndex, setSelectedIndex] = useState(0)
-
     const features = [
-        { icon: Target, title: "Accuracy", desc: "Precise procurement management", stat: "99.8%" },
-        { icon: Clock, title: "Time Framework", desc: "Delivered within timeline", stat: "On-Time" },
-        { icon: TrendingUp, title: "Excellence", desc: "High-quality service standards", stat: "A+ Rated" },
-        { icon: Package, title: "Supply Chain", desc: "Complete procurement solutions", stat: "Full-Service" },
-        { icon: Shield, title: "Reliability", desc: "Dependable and consistent", stat: "Trusted" },
-        { icon: CheckCircle, title: "Quality Assurance", desc: "Verified suppliers and products", stat: "Verified" },
+        { icon: Target, title: "Accuracy", desc: "Precise procurement management", highlight: "99.8% Accuracy" },
+        { icon: Clock, title: "Time Framework", desc: "Delivered within timeline", highlight: "On-Time Delivery" },
+        { icon: TrendingUp, title: "Excellence", desc: "High-quality service standards", highlight: "A+ Rated" },
+        { icon: Package, title: "Supply Chain", desc: "Complete procurement solutions", highlight: "Full-Service" },
+        { icon: Shield, title: "Reliability", desc: "Dependable and consistent", highlight: "Trusted Partner" },
+        { icon: CheckCircle, title: "Quality Assurance", desc: "Verified suppliers and products", highlight: "Verified" },
     ]
 
     const services = [
@@ -27,149 +21,278 @@ export default function Procurement({ darkMode }) {
     ]
 
     const stats = [
-        { value: "500+", label: "Projects Completed" },
-        { value: "200+", label: "Trusted Suppliers" },
-        { value: "99.5%", label: "On-Time Delivery" },
-        { value: "25%", label: "Average Cost Savings" },
+        { value: "500+", label: "Projects Completed", trend: "Expert Team" },
+        { value: "200+", label: "Trusted Suppliers", trend: "Network" },
+        { value: "99.5%", label: "On-Time Delivery", trend: "Reliable" },
+        { value: "25%", label: "Average Cost Savings", trend: "Value" },
     ]
 
-    const onSelect = useCallback(() => {
-        if (!emblaApi) return
-        setSelectedIndex(emblaApi.selectedScrollSnap())
-    }, [emblaApi])
-
-    useEffect(() => {
-        if (!emblaApi) return
-        onSelect()
-        emblaApi.on("select", onSelect)
-        return () => emblaApi.off("select", onSelect)
-    }, [emblaApi, onSelect])
-
     return (
-        <div className={`min-h-screen pt-20 pb-24 ${darkMode ? "bg-stone-900" : "bg-stone-50"}`}>
-            <div className="max-w-7xl mx-auto px-6 py-12">
-                {/* Header Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`rounded-3xl p-10 mb-16 text-center ${darkMode ? "bg-stone-800" : "bg-white"}`}
-                >
-                    <Package className={`w-16 h-16 mx-auto mb-4 ${darkMode ? "text-amber-500" : "text-amber-600"}`} />
-                    <h1 className={`text-4xl lg:text-5xl font-bold mb-4 ${darkMode ? "text-stone-100" : "text-stone-900"}`}>
-                        Procurement Management
-                    </h1>
-                    <p className={`text-lg mb-6 ${darkMode ? "text-amber-500" : "text-amber-600"} font-semibold`}>
-                        Your Work is Our Work
-                    </p>
-                    <p
-                        className={`text-base leading-relaxed max-w-3xl mx-auto ${darkMode ? "text-stone-300" : "text-stone-600"}`}
-                    >
-                        Your Busyness Makes No-Difference to Your Business. Accuracy, Time Framework & Excellence are Our First
-                        Priorities, So You Don't Need to Worry About it. We Are Here For You & We Do Things the Way We Do Our Work.
-                    </p>
-                </motion.div>
-
-                {/* Dashboard Style Feature Cards */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                    {features.map((feature, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 * index }}
-                            whileHover={{ y: -4 }}
-                            className={`rounded-2xl p-6 ${darkMode ? "bg-stone-800 hover:bg-stone-700" : "bg-white hover:shadow-xl"} transition-all border-l-4 ${darkMode ? "border-amber-500" : "border-amber-600"}`}
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <feature.icon className={`w-10 h-10 ${darkMode ? "text-amber-500" : "text-amber-600"}`} />
-                                <span
-                                    className={`text-xs font-bold px-3 py-1 rounded-full ${darkMode ? "bg-stone-700 text-amber-500" : "bg-stone-100 text-amber-600"}`}
-                                >
-                                    {feature.stat}
-                                </span>
-                            </div>
-                            <h3 className={`text-lg font-bold mb-2 ${darkMode ? "text-stone-100" : "text-stone-900"}`}>
-                                {feature.title}
-                            </h3>
-                            <p className={`text-sm ${darkMode ? "text-stone-400" : "text-stone-600"}`}>{feature.desc}</p>
-                        </motion.div>
-                    ))}
+        <>
+            <Navbar />
+            <div className={`min-h-screen pt-20 pb-16 overflow-hidden ${darkMode ? "bg-gradient-to-b from-slate-950 to-slate-900" : "bg-gradient-to-b from-white to-slate-50"}`}>
+                {/* Background Elements */}
+                <div className="fixed inset-0 pointer-events-none">
+                    <div className={`absolute top-1/4 left-1/4 w-72 h-72 rounded-full ${darkMode ? "bg-amber-900/5" : "bg-amber-100/10"} blur-3xl`} />
+                    <div className={`absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full ${darkMode ? "bg-orange-900/5" : "bg-orange-100/10"} blur-3xl`} />
                 </div>
 
-                {/* Services Carousel */}
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mb-16">
-                    <h2 className={`text-3xl font-bold text-center mb-10 ${darkMode ? "text-stone-100" : "text-stone-900"}`}>
-                        Our Procurement Services
-                    </h2>
-                    <div className="overflow-hidden" ref={emblaRef}>
-                        <div className="flex">
-                            {services.map((service, index) => (
-                                <div key={index} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_50%] px-3">
-                                    <div className={`p-10 rounded-2xl ${darkMode ? "bg-stone-800" : "bg-white"} h-full`}>
-                                        <service.icon className={`w-14 h-14 mb-6 ${darkMode ? "text-amber-500" : "text-amber-600"}`} />
-                                        <h3 className={`text-2xl font-bold mb-4 ${darkMode ? "text-stone-100" : "text-stone-900"}`}>
-                                            {service.title}
-                                        </h3>
-                                        <p className={`text-base ${darkMode ? "text-stone-300" : "text-stone-600"}`}>{service.desc}</p>
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+                    {/* Hero Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="mb-20 lg:mb-28"
+                    >
+                        <div className="grid lg:grid-cols-2 gap-10 items-center">
+                            <div>
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 mb-6"
+                                >
+                                    <Sparkles className="w-4 h-4 text-amber-500" />
+                                    <span className="text-sm font-medium bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+                                        Professional Procurement
+                                    </span>
+                                </motion.div>
+
+                                <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                    <span className="block">Procurement</span>
+                                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-500">
+                                        Management
+                                    </span>
+                                </h1>
+
+                                <p className={`text-lg mb-8 ${darkMode ? "text-slate-300" : "text-slate-600"} leading-relaxed`}>
+                                    Your Busyness Makes No-Difference to Your Business. Accuracy, Time Framework & Excellence are Our First
+                                    Priorities, So You Don't Need to Worry About it. We Are Here For You & We Do Things the Way We Do Our Work.
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <button className="group relative px-8 py-4 bg-gradient-to-r from-amber-600 to-orange-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-amber-500/25 transition-all duration-300 overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-amber-700 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        <span className="relative flex items-center gap-2">
+                                            Request a Quote
+                                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </span>
+                                    </button>
+                                    <button className={`px-8 py-4 rounded-xl font-medium border ${darkMode
+                                        ? "border-slate-700 text-white hover:border-slate-600 hover:bg-slate-800/30"
+                                        : "border-slate-200 text-slate-700 hover:border-amber-300 hover:bg-amber-50"
+                                        } transition-all duration-300 flex items-center gap-2`}>
+                                        <Package className="w-4 h-4" />
+                                        View Services
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Hero Visual */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="relative"
+                            >
+                                <div className={`relative rounded-2xl overflow-hidden ${darkMode
+                                    ? "bg-gradient-to-br from-slate-800/50 to-slate-900/50"
+                                    : "bg-gradient-to-br from-white to-amber-50"
+                                    } border ${darkMode ? "border-slate-800" : "border-slate-100"} shadow-lg`}>
+                                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05),transparent_70%)]" />
+
+                                    <div className="relative p-8 flex flex-col items-center justify-center min-h-[320px]">
+                                        <motion.div
+                                            animate={{
+                                                y: [0, -10, 0],
+                                                rotate: [0, 5, -5, 0]
+                                            }}
+                                            transition={{
+                                                duration: 4,
+                                                repeat: Infinity,
+                                                ease: "easeInOut"
+                                            }}
+                                            className="relative mb-6"
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-400 rounded-full blur-2xl opacity-20" />
+                                            <Package className="w-24 h-24 text-amber-500 relative z-10" />
+                                        </motion.div>
                                     </div>
                                 </div>
+                            </motion.div>
+                        </div>
+                    </motion.div>
+
+                    {/* Features Grid */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="mb-20"
+                    >
+                        <div className="text-center mb-10">
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="inline-block mb-4"
+                            >
+                                <span className={`px-3 py-1.5 rounded-lg text-xs font-medium ${darkMode
+                                    ? "bg-amber-500/10 text-amber-400"
+                                    : "bg-amber-100 text-amber-600"
+                                    }`}>
+                                    Key Features
+                                </span>
+                            </motion.div>
+                            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                Why Choose Our
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-500">
+                                    Procurement Services
+                                </span>
+                            </h2>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {features.map((feature, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.05 * index + 0.4 }}
+                                    whileHover={{ y: -3, scale: 1.02 }}
+                                    className={`group relative p-6 rounded-2xl transition-all duration-300 ${darkMode
+                                        ? "bg-gradient-to-br from-slate-800/40 to-slate-900/30 hover:from-slate-800 hover:to-slate-800"
+                                        : "bg-white hover:shadow-lg"
+                                        } border ${darkMode ? "border-slate-800/40 hover:border-amber-500/20" : "border-slate-100 hover:border-amber-200"}`}
+                                >
+                                    <div className={`mb-4 p-3 rounded-xl w-fit ${darkMode
+                                        ? "bg-gradient-to-br from-amber-900/20 to-orange-900/15"
+                                        : "bg-gradient-to-br from-amber-50 to-orange-50"
+                                        }`}>
+                                        <feature.icon className={`w-8 h-8 ${darkMode ? "text-amber-400" : "text-amber-600"}`} />
+                                    </div>
+
+                                    <h3 className={`text-xl font-bold mb-2 ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                        {feature.title}
+                                    </h3>
+                                    <p className={`text-sm ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
+                                        {feature.desc}
+                                    </p>
+
+                                    <div className={`mt-4 px-3 py-1 rounded-lg text-xs font-medium w-fit ${darkMode
+                                        ? "bg-amber-500/10 text-amber-400"
+                                        : "bg-amber-50 text-amber-600"
+                                        }`}>
+                                        {feature.highlight}
+                                    </div>
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
-                    <div className="flex justify-center gap-2 mt-6">
-                        {services.map((_, index) => (
-                            <button
-                                key={index}
-                                className={`w-2 h-2 rounded-full transition-all ${index === selectedIndex
-                                        ? darkMode
-                                            ? "bg-amber-500 w-8"
-                                            : "bg-amber-600 w-8"
-                                        : darkMode
-                                            ? "bg-stone-700"
-                                            : "bg-stone-300"
-                                    }`}
-                                onClick={() => emblaApi?.scrollTo(index)}
-                            />
-                        ))}
-                    </div>
-                </motion.div>
+                    </motion.div>
 
-                {/* Stats Grid */}
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mb-16">
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {stats.map((stat, index) => (
+                    {/* Services Grid */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="mb-20"
+                    >
+                        <div className="text-center mb-10">
                             <motion.div
-                                key={index}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.7 + index * 0.1 }}
-                                className={`p-8 rounded-2xl text-center ${darkMode ? "bg-stone-800" : "bg-white"}`}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="inline-block mb-4"
                             >
-                                <div className={`text-5xl font-bold mb-2 ${darkMode ? "text-amber-500" : "text-amber-600"}`}>
-                                    {stat.value}
-                                </div>
-                                <p className={`text-base ${darkMode ? "text-stone-300" : "text-stone-600"}`}>{stat.label}</p>
+                                <span className={`px-3 py-1.5 rounded-lg text-xs font-medium ${darkMode
+                                    ? "bg-orange-500/10 text-orange-400"
+                                    : "bg-orange-100 text-orange-600"
+                                    }`}>
+                                    Our Services
+                                </span>
                             </motion.div>
-                        ))}
-                    </div>
-                </motion.div>
+                            <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                Complete Procurement
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">
+                                    Solutions
+                                </span>
+                            </h2>
+                        </div>
 
-                {/* CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 }}
-                    className={`rounded-3xl p-10 text-center ${darkMode ? "bg-linear-to-br from-amber-600 to-amber-700" : "bg-linear-to-br from-amber-500 to-amber-600"}`}
-                >
-                    <h2 className="text-3xl font-bold text-white mb-4">Optimize Your Procurement Process</h2>
-                    <p className="text-white/90 text-lg mb-6">
-                        Partner with us for reliable, efficient, and cost-effective procurement solutions
-                    </p>
-                    <button className="px-8 py-3 bg-white text-amber-600 rounded-full font-semibold hover:scale-105 transition-transform">
-                        Request a Quote
-                    </button>
-                </motion.div>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            {services.map((service, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.6 + index * 0.1 }}
+                                    className={`group relative p-6 rounded-2xl transition-all duration-300 ${darkMode
+                                        ? "bg-gradient-to-br from-slate-800/40 to-slate-900/30 hover:from-slate-800 hover:to-slate-800"
+                                        : "bg-white hover:shadow-lg"
+                                        } border ${darkMode ? "border-slate-800/40 hover:border-orange-500/20" : "border-slate-100 hover:border-orange-200"}`}
+                                >
+                                    <service.icon className={`w-10 h-10 mb-4 ${darkMode ? "text-orange-400" : "text-orange-600"}`} />
+                                    <h3 className={`text-xl font-bold mb-3 ${darkMode ? "text-white" : "text-slate-900"}`}>
+                                        {service.title}
+                                    </h3>
+                                    <p className={`text-sm ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
+                                        {service.desc}
+                                    </p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    {/* Stats Section */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7 }}
+                        className="mb-20"
+                    >
+                        <div className={`rounded-2xl p-8 ${darkMode
+                            ? "bg-gradient-to-br from-slate-800/30 to-slate-900/30 border border-slate-800/40"
+                            : "bg-gradient-to-br from-amber-50/30 to-orange-50/30 border border-slate-100"
+                            }`}>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {stats.map((stat, index) => (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 0.8 + index * 0.1 }}
+                                        className="text-center"
+                                    >
+                                        <div className={`text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent`}>
+                                            {stat.value}
+                                        </div>
+                                        <p className={`text-base font-medium mb-1 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>
+                                            {stat.label}
+                                        </p>
+                                        <div className={`text-xs ${darkMode ? "text-slate-500" : "text-slate-500"}`}>
+                                            {stat.trend}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Final CTA */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.9 }}
+                        className="relative overflow-hidden rounded-2xl"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-orange-500" />
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),transparent_70%)]" />
+
+
+                    </motion.div>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
+
+
