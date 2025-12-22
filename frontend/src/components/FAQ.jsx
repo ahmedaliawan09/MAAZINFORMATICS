@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { ChevronDown, HelpCircle } from "lucide-react"
+import Faq from "../assets/images/FAQ.png"
 
 const FAQ = ({ darkMode }) => {
     const [openIndex, setOpenIndex] = useState(0)
@@ -54,19 +55,15 @@ const FAQ = ({ darkMode }) => {
 
                         {/* Image Placeholder */}
                         <div className="relative rounded-2xl overflow-hidden shadow-xl mt-6 sm:mt-8">
-                            <img src="/customer-support-team.png" alt="FAQ Support" className="w-full h-48 sm:h-64 object-cover" />
+                            <img src={Faq} alt="FAQ Support" className="w-full   h-48 sm:h-64 object-cover" />
                             <div className="absolute inset-0 bg-linear-to-t from-teal-500/40 to-transparent"></div>
 
                             {/* Floating Icon */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 rounded-2xl flex items-center justify-center shadow-2xl">
-                                    <HelpCircle className="text-teal-500" size={32} />
-                                </div>
-                            </div>
+
                         </div>
 
                         {/* Still have questions card */}
-                        <div className="bg-teal-500 rounded-2xl p-6 sm:p-8 mt-6 sm:mt-8">
+                        <div className="bg-teal-500 rounded-2xl  p-6 sm:p-8 mt-6 sm:mt-8">
                             <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2 sm:mb-3">Still have questions?</h3>
                             <p className="text-sm sm:text-base text-slate-700 mb-4 sm:mb-6">
                                 Can't find the answer you're looking for? Please chat with our friendly team.
@@ -83,12 +80,12 @@ const FAQ = ({ darkMode }) => {
                             <div
                                 key={index}
                                 className={`rounded-2xl overflow-hidden transition-all duration-300 ${openIndex === index
-                                        ? darkMode
-                                            ? "bg-slate-800 border-2 border-teal-500 shadow-lg shadow-teal-500/20"
-                                            : "bg-white border-2 border-teal-500 shadow-lg shadow-teal-500/20"
-                                        : darkMode
-                                            ? "bg-slate-800/50 border border-gray-700/50"
-                                            : "bg-white border border-slate-200 shadow-sm"
+                                    ? darkMode
+                                        ? "bg-slate-800 border-2 border-teal-500 shadow-lg shadow-teal-500/20"
+                                        : "bg-white border-2 border-teal-500 shadow-lg shadow-teal-500/20"
+                                    : darkMode
+                                        ? "bg-slate-800/50 border border-gray-700/50"
+                                        : "bg-white border border-slate-200 shadow-sm"
                                     }`}
                             >
                                 <button

@@ -1,90 +1,119 @@
-import { MessageSquare, Award, Headphones } from "lucide-react"
+"use client"
 
-const WhyChooseUs = ({ darkMode }) => {
+import { motion } from "framer-motion"
+import { Star, Shield, Clock, Award, TrendingUp, Users } from "lucide-react"
+
+const WhyChooseUs = () => {
     const features = [
         {
-            icon: MessageSquare,
-            title: "Feedback",
-            description:
-                "We put our best efforts in your work to satisfy you 100%. That's why our clients give us ⭐⭐⭐⭐⭐ feedback.",
-            image: "/customer-satisfaction-five-star-rating.jpg",
+            icon: Star,
+            title: "Client Feedback",
+            description: "We put our best efforts in your work to satisfy you 100%. That's why our clients give us ⭐⭐⭐⭐⭐ feedback.",
+            color: "amber",
+            stat: "98%",
+            statLabel: "Satisfaction"
         },
         {
-            icon: Award,
+            icon: Shield,
             title: "Quality Assurance",
-            description:
-                "We provide the best quality work & services that enhance your business exposure & customer satisfaction.",
-            image: "/quality-assurance-award-certification.jpg",
+            description: "We provide the best quality work & services that enhance your business exposure & customer satisfaction.",
+            color: "emerald",
+            stat: "ISO 9001",
+            statLabel: "Certified"
         },
         {
-            icon: Headphones,
+            icon: Clock,
             title: "24/7 Support",
-            description:
-                "It's all about quality service. Not only we enjoy helping our clients, but also being available whenever they need us.",
-            image: "/24-7-customer-support-headset.jpg",
+            description: "It's all about quality service. Not only we enjoy helping our clients, but also being available whenever they need us.",
+            color: "blue",
+            stat: "24/7",
+            statLabel: "Availability"
         },
     ]
 
     return (
-        <section
-            className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
-            style={{ backgroundColor: darkMode ? "#234e52" : "#e5f3f3" }}
-        >
-            {/* Decorative Background Elements */}
-            <div className="absolute top-20 left-10 w-48 h-48 sm:w-72 sm:h-72 bg-teal-500/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 right-10 w-64 h-64 sm:w-96 sm:h-96 bg-teal-400/10 rounded-full blur-3xl"></div>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-                    <div className="text-teal-600 text-sm font-semibold tracking-wider uppercase mb-4">WHY CHOOSE US</div>
-                    <h2
-                        className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 ${darkMode ? "text-white" : "text-slate-900"}`}
-                    >
+                <div className="text-center max-w-2xl mx-auto mb-16">
+                    <div className="inline-block px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-sm font-semibold mb-4">
+                        WHY CHOOSE US
+                    </div>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                         Excellence in Every Service
                     </h2>
-                    <p className={`text-base sm:text-lg ${darkMode ? "text-teal-100" : "text-gray-600"}`}>
+                    <p className="text-gray-600">
                         Our main focus is to develop your business, secure your information and help solve your problems.
                     </p>
                 </div>
 
-                {/* Features Grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                {/* Features grid */}
+                <div className="grid md:grid-cols-3 gap-8 mb-16">
                     {features.map((feature, index) => (
-                        <div
+                        <motion.div
                             key={index}
-                            className={`group relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 ${darkMode
-                                    ? "bg-slate-800/40 border border-gray-700/50"
-                                    : "bg-white/60 backdrop-blur-sm border border-white/60"
-                                } shadow-lg hover:shadow-2xl`}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            whileHover={{ y: -10 }}
+                            className="relative"
                         >
-                            {/* Image Header */}
-                            <div className="relative h-40 sm:h-48 overflow-hidden">
-                                <img
-                                    src={feature.image || "/placeholder.svg"}
-                                    alt={feature.title}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-900/80"></div>
+                            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-shadow">
+                                {/* Icon */}
+                                <div className={`w-14 h-14 rounded-lg bg-${feature.color}-100 flex items-center justify-center mb-4`}>
+                                    <feature.icon className={`text-${feature.color}-600`} size={24} />
+                                </div>
 
-                                {/* Icon Badge */}
-                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 sm:w-16 sm:h-16 bg-teal-500 rounded-2xl flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-300">
-                                    <feature.icon className="text-white" size={28} />
+                                {/* Content */}
+                                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                                    {feature.title}
+                                </h3>
+                                <p className="text-gray-600 mb-6">
+                                    {feature.description}
+                                </p>
+
+                                {/* Stat */}
+                                <div className="pt-4 border-t border-gray-100">
+                                    <div className="text-2xl font-bold text-gray-900">
+                                        {feature.stat}
+                                    </div>
+                                    <div className="text-sm text-gray-500">
+                                        {feature.statLabel}
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Content */}
-                            <div className="p-6 sm:p-8 text-center">
-                                <h3
-                                    className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}
-                                >
-                                    {feature.title}
-                                </h3>
-                                <p className={`text-sm sm:text-base leading-relaxed ${darkMode ? "text-teal-100" : "text-gray-600"}`}>
-                                    {feature.description}
-                                </p>
+                            {/* Corner accent */}
+                            <div className={`absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-${feature.color}-500 rounded-tr-xl`} />
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[
+                        { icon: TrendingUp, value: "15+", label: "Years Experience", color: "cyan" },
+                        { icon: Users, value: "500+", label: "Happy Clients", color: "blue" },
+                        { icon: Award, value: "3×", label: "ISO Certified", color: "amber" },
+                        { icon: Clock, value: "24/7", label: "Support", color: "emerald" }
+                    ].map((stat, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.2 + index * 0.1 }}
+                            className="bg-white rounded-xl border border-gray-200 p-6 text-center"
+                        >
+                            <div className={`inline-flex w-12 h-12 rounded-lg bg-${stat.color}-100 items-center justify-center mb-3`}>
+                                <stat.icon className={`text-${stat.color}-600`} size={20} />
                             </div>
-                        </div>
+                            <div className="text-2xl font-bold text-gray-900">
+                                {stat.value}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                                {stat.label}
+                            </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>

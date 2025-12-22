@@ -18,6 +18,8 @@ import ITServices from "../pages/Services/ITServices"
 import MedicalBilling from "../pages/Services/MedicalBilling"
 import Procurement from "../pages/Services/Procurement"
 import Careers from "../pages/careers/career";
+import Achievements from "../pages/Acheivements/acheivements";
+import Memberships from "../pages/Membership/membership";
 
 function Approuter() {
     const [darkMode, setDarkMode] = useState(false)
@@ -45,9 +47,11 @@ function Approuter() {
                     <Route path="/services/epa" element={<EPA darkMode={darkMode} />} />
                     <Route path="/services/content-writing" element={<ContentWriting darkMode={darkMode} />} />
                     <Route path="/services/it-services" element={<ITServices darkMode={darkMode} />} />
-                    <Route path="/about" element={<About darkMode={darkMode} />} />
+                    <Route path="/who-we-are" element={<About darkMode={darkMode} />} />
                     <Route path="/contact" element={<Contact darkMode={darkMode} />} />
                     <Route path="/career" element={<Careers darkMode={darkMode} />} />
+                    <Route path="/acheivements" element={<Achievements darkMode={darkMode} />} />
+                    <Route path="/memberships" element={<Memberships darkMode={darkMode} />} />
                 </Routes>
                 <Footer darkMode={darkMode} />
             </div>

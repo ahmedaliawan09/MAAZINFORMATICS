@@ -132,24 +132,24 @@ const Services = ({ darkMode }) => {
                                                         <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
                                                             <span
                                                                 className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium ${darkMode
-                                                                        ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
-                                                                        : "bg-teal-50 text-teal-700 border border-teal-200"
+                                                                    ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
+                                                                    : "bg-teal-50 text-teal-700 border border-teal-200"
                                                                     }`}
                                                             >
                                                                 Professional
                                                             </span>
                                                             <span
                                                                 className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium ${darkMode
-                                                                        ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
-                                                                        : "bg-teal-50 text-teal-700 border border-teal-200"
+                                                                    ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
+                                                                    : "bg-teal-50 text-teal-700 border border-teal-200"
                                                                     }`}
                                                             >
                                                                 Reliable
                                                             </span>
                                                             <span
                                                                 className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium ${darkMode
-                                                                        ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
-                                                                        : "bg-teal-50 text-teal-700 border border-teal-200"
+                                                                    ? "bg-teal-500/20 text-teal-300 border border-teal-500/30"
+                                                                    : "bg-teal-50 text-teal-700 border border-teal-200"
                                                                     }`}
                                                             >
                                                                 24/7 Support
@@ -180,8 +180,8 @@ const Services = ({ darkMode }) => {
                     <button
                         onClick={scrollPrev}
                         className={`absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-2xl backdrop-blur-md z-20 ${darkMode
-                                ? "bg-white/10 border border-white/20 text-white hover:bg-white/20"
-                                : "bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 shadow-lg"
+                            ? "bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                            : "bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 shadow-lg"
                             }`}
                     >
                         <ChevronLeft size={24} />
@@ -189,8 +189,8 @@ const Services = ({ darkMode }) => {
                     <button
                         onClick={scrollNext}
                         className={`absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-2xl backdrop-blur-md z-20 ${darkMode
-                                ? "bg-white/10 border border-white/20 text-white hover:bg-white/20"
-                                : "bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 shadow-lg"
+                            ? "bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                            : "bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 shadow-lg"
                             }`}
                     >
                         <ChevronRight size={24} />
