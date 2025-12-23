@@ -129,11 +129,11 @@ export default function Careers({ darkMode }) {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen pt-24 pb-24 bg-gradient-to-b from-white via-blue-50/10 to-white">
+            <div className="min-h-screen pt-24 pb-24 bg-linear-to-b from-white via-blue-50/10 to-white">
                 {/* Background Effects */}
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/10 via-transparent to-transparent rounded-full blur-3xl" />
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-cyan-500/10 via-transparent to-transparent rounded-full blur-3xl" />
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-blue-500/10 via-transparent to-transparent rounded-full blur-3xl" />
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,7 +149,7 @@ export default function Careers({ darkMode }) {
                             animate={{ scale: 1 }}
                             className="inline-block mb-6"
                         >
-                            <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-blue-500/10 border border-teal-500/20 backdrop-blur-sm">
+                            <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-r from-teal-500/10 to-blue-500/10 border border-teal-500/20 backdrop-blur-sm">
                                 <Zap className="text-teal-500" size={16} />
                                 <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                     Join Our Team
@@ -158,11 +158,11 @@ export default function Careers({ darkMode }) {
                         </motion.div>
 
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-                            <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                                 Build Your Career
                             </span>
                             <br />
-                            <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
                                 With Us
                             </span>
                         </h1>
@@ -229,7 +229,7 @@ export default function Careers({ darkMode }) {
                                     className={`relative p-6 rounded-2xl border ${benefit.borderColor} ${benefit.bgColor} backdrop-blur-sm transition-all duration-300`}
                                 >
                                     <div className="mb-4">
-                                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${benefit.color} flex items-center justify-center mb-3`}>
+                                        <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${benefit.color} flex items-center justify-center mb-3`}>
                                             <benefit.icon className="text-white" size={24} />
                                         </div>
                                         <h3 className="text-lg font-bold text-slate-900">
@@ -237,7 +237,7 @@ export default function Careers({ darkMode }) {
                                         </h3>
                                         <p className="text-sm text-slate-600 mt-2">{benefit.desc}</p>
                                     </div>
-                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r opacity-50"></div>
+                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r opacity-50"></div>
                                 </motion.div>
                             ))}
                         </div>
@@ -253,8 +253,8 @@ export default function Careers({ darkMode }) {
                         <div className="grid lg:grid-cols-2 gap-12 items-center">
                             <div className="order-2 lg:order-1">
                                 <div className="relative rounded-3xl overflow-hidden aspect-4/3 shadow-2xl">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-teal-500/20 via-blue-500/20 to-transparent" />
-                                    <div className="relative h-full bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-linear-to-br from-teal-500/20 via-blue-500/20 to-transparent" />
+                                    <div className="relative h-full bg-linear-to-br from-slate-900 to-slate-800 flex items-center justify-center">
                                         <div className="text-center p-8">
                                             <Users className="w-16 h-16 text-white/50 mx-auto mb-4" />
                                             <h3 className="text-2xl font-bold text-white mb-2">Our Team Culture</h3>
@@ -266,7 +266,7 @@ export default function Careers({ darkMode }) {
 
                             <div className="order-1 lg:order-2">
                                 <div className="inline-flex items-center gap-2 mb-4">
-                                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 animate-pulse" />
+                                    <div className="w-2 h-2 rounded-full bg-linear-to-r from-teal-500 to-blue-500 animate-pulse" />
                                     <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                         Our Culture
                                     </span>
@@ -274,7 +274,7 @@ export default function Careers({ darkMode }) {
 
                                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900">
                                     Where Innovation Meets
-                                    <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent"> Collaboration</span>
+                                    <span className="bg-linear-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent"> Collaboration</span>
                                 </h2>
 
                                 <div className="space-y-4">
@@ -293,7 +293,7 @@ export default function Careers({ darkMode }) {
                                             whileHover={{ x: 4 }}
                                             className="flex items-center gap-3 group"
                                         >
-                                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center">
+                                            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-teal-500 to-blue-500 flex items-center justify-center">
                                                 <ChevronRight className="w-4 h-4 text-white" />
                                             </div>
                                             <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">
@@ -329,7 +329,7 @@ export default function Careers({ darkMode }) {
                             className="mb-8 flex flex-col sm:flex-row gap-4"
                         >
                             <div className="flex-1 relative">
-                                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-blue-500/10 rounded-xl blur-md opacity-50" />
+                                <div className="absolute inset-0 bg-linear-to-r from-teal-500/10 to-blue-500/10 rounded-xl blur-md opacity-50" />
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                                 <input
                                     type="text"
@@ -348,7 +348,7 @@ export default function Careers({ darkMode }) {
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => setSelectedDepartment(dept)}
                                         className={`px-4 py-3 rounded-xl font-medium whitespace-nowrap transition-all ${selectedDepartment === dept
-                                            ? "bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-lg shadow-teal-500/25"
+                                            ? "bg-linear-to-r from-teal-500 to-blue-500 text-white shadow-lg shadow-teal-500/25"
                                             : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 hover:border-teal-500"
                                             }`}
                                     >
@@ -375,7 +375,7 @@ export default function Careers({ darkMode }) {
                                                 <h3 className="text-xl font-bold text-slate-900 group-hover:text-teal-600 transition-colors duration-300">
                                                     {position.title}
                                                 </h3>
-                                                <span className="px-3 py-1 bg-gradient-to-r from-teal-500/10 to-blue-500/10 text-teal-600 text-xs font-semibold rounded-full border border-teal-500/20">
+                                                <span className="px-3 py-1 bg-linear-to-r from-teal-500/10 to-blue-500/10 text-teal-600 text-xs font-semibold rounded-full border border-teal-500/20">
                                                     {position.department}
                                                 </span>
                                             </div>
@@ -403,7 +403,7 @@ export default function Careers({ darkMode }) {
                                         <motion.button
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
-                                            className="bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40"
+                                            className="bg-linear-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40"
                                         >
                                             Apply Now
                                             <ChevronRight size={18} />
@@ -419,7 +419,7 @@ export default function Careers({ darkMode }) {
                                 animate={{ opacity: 1 }}
                                 className="text-center py-16"
                             >
-                                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-slate-100 to-slate-200 rounded-full flex items-center justify-center">
+                                <div className="w-20 h-20 mx-auto mb-4 bg-linear-to-r from-slate-100 to-slate-200 rounded-full flex items-center justify-center">
                                     <Briefcase className="w-10 h-10 text-slate-400" />
                                 </div>
                                 <p className="text-lg font-medium text-slate-700">No positions found matching your criteria</p>
@@ -436,8 +436,8 @@ export default function Careers({ darkMode }) {
                         className="mt-20"
                     >
                         <div className="relative rounded-3xl overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-blue-600 to-cyan-600" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-r from-teal-600 via-blue-600 to-cyan-600" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent" />
                             <div className="relative p-12 text-center">
                                 <div className="inline-flex items-center gap-2 mb-4">
                                     <Sparkles className="w-5 h-5 text-white" />

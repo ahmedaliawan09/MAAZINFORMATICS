@@ -59,7 +59,7 @@ export default function WhoWeAre() {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen pt-24 pb-24 bg-gradient-to-b from-white via-slate-50/30 to-white">
+            <div className="min-h-screen pt-24 pb-24 bg-linear-to-b from-white via-slate-50/30 to-white">
                 {/* Background Elements */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
@@ -75,18 +75,18 @@ export default function WhoWeAre() {
                         className="text-center mb-16"
                     >
                         <div className="inline-flex items-center gap-2 mb-6">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 animate-pulse" />
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-teal-500 to-blue-500 animate-pulse" />
                             <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                 About Us
                             </span>
                         </div>
 
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                            <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                                 Transforming
                             </span>
                             <br />
-                            <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
                                 Healthcare IT
                             </span>
                         </h1>
@@ -128,7 +128,7 @@ export default function WhoWeAre() {
                             <div className="space-y-8">
                                 <div>
                                     <div className="inline-flex items-center gap-2 mb-4">
-                                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500" />
+                                        <div className="w-2 h-2 rounded-full bg-linear-to-r from-teal-500 to-blue-500" />
                                         <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                             Who We Are
                                         </span>
@@ -162,7 +162,7 @@ export default function WhoWeAre() {
                                             whileHover={{ x: 4 }}
                                             className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200"
                                         >
-                                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center">
+                                            <div className="w-10 h-10 rounded-lg bg-linear-to-br from-teal-500 to-blue-500 flex items-center justify-center">
                                                 <principle.icon className="w-5 h-5 text-white" />
                                             </div>
                                             <div>
@@ -189,7 +189,7 @@ export default function WhoWeAre() {
                                                             alt={`About us ${idx + 1}`}
                                                             className="w-full h-full object-cover"
                                                         />
-                                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent" />
+                                                        <div className="absolute inset-0 bg-linear-to-t from-slate-900/20 to-transparent" />
                                                     </div>
                                                 </div>
                                             ),
@@ -225,7 +225,7 @@ export default function WhoWeAre() {
                     >
                         <div className="text-center mb-12">
                             <div className="inline-flex items-center gap-2 mb-4">
-                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 animate-pulse" />
+                                <div className="w-2 h-2 rounded-full bg-linear-to-r from-teal-500 to-blue-500 animate-pulse" />
                                 <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                     Our Values
                                 </span>
@@ -249,7 +249,7 @@ export default function WhoWeAre() {
                                     className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-all duration-300"
                                 >
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-12 h-12 rounded-lg bg-linear-to-br from-teal-500 to-blue-500 flex items-center justify-center shrink-0">
                                             <value.icon className="w-6 h-6 text-white" />
                                         </div>
                                         <div>
@@ -273,7 +273,7 @@ export default function WhoWeAre() {
                     >
                         <div className="text-center mb-12">
                             <div className="inline-flex items-center gap-2 mb-4">
-                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-teal-500 to-blue-500" />
+                                <div className="w-2 h-2 rounded-full bg-linear-to-r from-teal-500 to-blue-500" />
                                 <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                     Our Journey
                                 </span>
@@ -285,7 +285,7 @@ export default function WhoWeAre() {
 
                         <div className="relative">
                             {/* Timeline Line */}
-                            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-teal-500 via-blue-500 to-cyan-500" />
+                            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-linear-to-b from-teal-500 via-blue-500 to-cyan-500" />
 
                             <div className="space-y-8">
                                 {milestones.map((milestone, idx) => (
@@ -306,7 +306,7 @@ export default function WhoWeAre() {
                                             </div>
                                         </div>
 
-                                        <div className="absolute left-6 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 border-4 border-white shadow-lg" />
+                                        <div className="absolute left-6 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full bg-linear-to-r from-teal-500 to-blue-500 border-4 border-white shadow-lg" />
 
                                         <div className={`flex-1 ${idx % 2 === 0 ? 'md:pl-12' : 'md:text-right md:pr-12'}`} />
                                     </motion.div>

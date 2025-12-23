@@ -107,7 +107,7 @@ const Services = () => {
     }
 
     return (
-        <section className="relative py-20 overflow-hidden bg-gradient-to-b from-white via-blue-50/10 to-white">
+        <section className="relative py-20 overflow-hidden bg-linear-to-b from-white via-blue-50/10 to-white">
             {/* Background Elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-20 left-10% w-64 h-64 bg-blue-100/30 rounded-full blur-3xl" />
@@ -153,7 +153,7 @@ const Services = () => {
                             {/* Card Container */}
                             <div className="relative bg-white rounded-2xl border border-gray-200 p-8 transition-all duration-300 hover:shadow-2xl hover:border-gray-300 h-full flex flex-col">
                                 {/* Top Decorative Element */}
-                                <div className="absolute top-0 left-8 right-8 h-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute top-0 left-8 right-8 h-1 bg-linear-to-r from-transparent via-gray-200 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
 
                                 {/* Icon Section */}
                                 <div className="mb-6">
@@ -185,7 +185,7 @@ const Services = () => {
                                 </div>
 
                                 {/* Description */}
-                                <p className="text-gray-600 text-base leading-relaxed mb-6 flex-grow">
+                                <p className="text-gray-600 text-base leading-relaxed mb-6 grow">
                                     {service.description}
                                 </p>
 

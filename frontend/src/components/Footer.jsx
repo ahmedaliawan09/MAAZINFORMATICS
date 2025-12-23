@@ -4,7 +4,7 @@ import maazlogo from "../assets/maazlogo.png"
 
 const Footer = () => {
     return (
-        <footer className="relative overflow-hidden bg-gradient-to-b from-gray-900 to-gray-950 text-white">
+        <footer className="relative overflow-hidden bg-linear-to-b from-gray-900 to-gray-950 text-white">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -14,7 +14,7 @@ const Footer = () => {
             </div>
 
             {/* Top Wave Divider */}
-            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500" />
+            <div className="absolute top-0 left-0 right-0 h-2 bg-linear-to-r from-blue-500 via-purple-500 to-blue-500" />
 
             <div className="relative z-10 pt-16 pb-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +33,7 @@ const Footer = () => {
                                 <div>
                                     <h3 className="text-xl font-bold">
                                         <span className="text-white">Maaz</span>
-                                        <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Informatics</span>
+                                        <span className="bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Informatics</span>
                                     </h3>
                                     <p className="text-gray-300 text-sm mt-1">IT and Healthcare Company</p>
                                 </div>
@@ -74,7 +74,7 @@ const Footer = () => {
                         <div>
                             <h4 className="text-lg font-bold mb-6 pb-3 border-b border-gray-800 relative">
                                 Quick Links
-                                <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></span>
+                                <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-linear-to-r from-blue-500 to-purple-500 rounded-full"></span>
                             </h4>
                             <ul className="space-y-3">
                                 {[
@@ -101,7 +101,7 @@ const Footer = () => {
                         <div>
                             <h4 className="text-lg font-bold mb-6 pb-3 border-b border-gray-800 relative">
                                 Our Services
-                                <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></span>
+                                <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-linear-to-r from-cyan-500 to-blue-500 rounded-full"></span>
                             </h4>
                             <ul className="space-y-3">
                                 {[
@@ -128,11 +128,11 @@ const Footer = () => {
                         <div>
                             <h4 className="text-lg font-bold mb-6 pb-3 border-b border-gray-800 relative">
                                 Contact Info
-                                <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></span>
+                                <span className="absolute bottom-0 left-0 w-12 h-0.5 bg-linear-to-r from-purple-500 to-pink-500 rounded-full"></span>
                             </h4>
                             <ul className="space-y-4">
                                 <li className="flex items-start gap-3 group">
-                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                                    <div className="w-10 h-10 rounded-lg bg-linear-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
                                         <MapPin className="w-5 h-5 text-blue-400" />
                                     </div>
                                     <div className="flex-1">
@@ -143,7 +143,7 @@ const Footer = () => {
                                 </li>
 
                                 <li className="flex items-start gap-3 group">
-                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                                    <div className="w-10 h-10 rounded-lg bg-linear-to-br from-green-500/20 to-green-600/20 border border-green-500/30 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
                                         <Phone className="w-5 h-5 text-green-400" />
                                     </div>
                                     <div className="flex-1">
@@ -154,11 +154,11 @@ const Footer = () => {
                                 </li>
 
                                 <li className="flex items-start gap-3 group">
-                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                                    <div className="w-10 h-10 rounded-lg bg-linear-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
                                         <Mail className="w-5 h-5 text-purple-400" />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-sm text-gray-300 group-hover:text-white transition-colors duration-300 break-words">
+                                        <div className="text-sm text-gray-300 group-hover:text-white transition-colors duration-300 wrap-break-word">
                                             info@maazinformatics.com
                                         </div>
                                     </div>
@@ -170,15 +170,15 @@ const Footer = () => {
                     {/* Certifications & Awards */}
                     <div className="py-6 border-y border-gray-800 mb-8">
                         <div className="flex flex-wrap items-center justify-center gap-6">
-                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700/30">
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-blue-900/30 to-purple-900/30 border border-blue-700/30">
                                 <Shield className="w-4 h-4 text-blue-400" />
                                 <span className="text-sm text-blue-300">P@SHA Member</span>
                             </div>
-                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700/30">
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-green-900/30 to-emerald-900/30 border border-green-700/30">
                                 <Award className="w-4 h-4 text-green-400" />
                                 <span className="text-sm text-green-300">Triple ISO Certified</span>
                             </div>
-                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-700/30">
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-700/30">
                                 <Globe className="w-4 h-4 text-cyan-400" />
                                 <span className="text-sm text-cyan-300">Global Operations</span>
                             </div>
@@ -213,7 +213,7 @@ const Footer = () => {
             {/* Back to Top Button */}
             <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center z-50"
+                className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-linear-to-br from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 hover:scale-110 flex items-center justify-center z-50"
                 aria-label="Back to top"
             >
                 <svg className="w-5 h-5 transform rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

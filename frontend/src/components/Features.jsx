@@ -43,11 +43,11 @@ const Features = () => {
     }
 
     return (
-        <section className="relative py-20 overflow-hidden bg-gradient-to-b from-white to-slate-50">
+        <section className="relative py-20 overflow-hidden bg-linear-to-b from-white to-slate-50">
             {/* Animated Background */}
             <div className="absolute inset-0">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/10 via-transparent to-transparent rounded-full blur-3xl" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-cyan-500/10 via-transparent to-transparent rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-blue-500/10 via-transparent to-transparent rounded-full blur-3xl" />
 
                 {/* Geometric Pattern */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(6,182,212,0.05)_0%,transparent_50%),radial-gradient(circle_at_80%_70%,rgba(59,130,246,0.05)_0%,transparent_50%)]" />
@@ -72,7 +72,7 @@ const Features = () => {
                         >
                             {/* Badge */}
                             <motion.div variants={itemVariants}>
-                                <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-100">
+                                <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-linear-to-r from-cyan-50 to-blue-50 border border-cyan-100">
                                     <Zap className="text-cyan-500" size={16} />
                                     <span className="text-sm font-semibold text-cyan-600 uppercase tracking-wider">
                                         ABOUT MAAZ INFORMATICS
@@ -83,14 +83,14 @@ const Features = () => {
                             {/* Heading */}
                             <motion.div variants={itemVariants} className="space-y-4">
                                 <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
-                                    <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                                    <span className="bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                                         At Maaz
                                     </span>
-                                    <span className="block bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                                    <span className="block bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                                         Informatics
                                     </span>
                                 </h2>
-                                <div className="w-24 h-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600" />
+                                <div className="w-24 h-1.5 rounded-full bg-linear-to-r from-cyan-500 to-blue-600" />
                             </motion.div>
 
                             {/* Description */}
@@ -113,7 +113,7 @@ const Features = () => {
                                         whileHover={{ x: 8 }}
                                         className="flex items-center gap-3 group"
                                     >
-                                        <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center transform group-hover:rotate-12 transition-all duration-300 shadow-lg shadow-blue-500/30">
+                                        <div className="shrink-0 w-10 h-10 rounded-xl bg-linear-to-br from-cyan-500 to-blue-600 flex items-center justify-center transform group-hover:rotate-12 transition-all duration-300 shadow-lg shadow-blue-500/30">
                                             <CheckCircle2 className="text-white" size={18} />
                                         </div>
                                         <span className="text-sm font-medium text-slate-700">
@@ -149,9 +149,9 @@ const Features = () => {
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl overflow-hidden shadow-xl shadow-blue-500/30"
+                                    className="group relative px-8 py-4 bg-linear-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl overflow-hidden shadow-xl shadow-blue-500/30"
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                     <span className="relative flex items-center gap-2">
                                         Learn More About Us
                                         <svg className="w-5 h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +178,7 @@ const Features = () => {
                                 alt="Team at work"
                                 className="w-full h-auto object-cover aspect-4/3"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 via-transparent to-blue-500/20" />
+                            <div className="absolute inset-0 bg-linear-to-tr from-cyan-500/20 via-transparent to-blue-500/20" />
 
                             {/* Floating Elements */}
                             <motion.div
@@ -186,8 +186,8 @@ const Features = () => {
                                 transition={{ duration: 3, repeat: Infinity }}
                                 className="absolute top-6 right-6"
                             >
-                                <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-4 shadow-2xl border border-slate-100">
-                                    <div className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                                <div className="bg-linear-to-br from-white to-slate-50 rounded-2xl p-4 shadow-2xl border border-slate-100">
+                                    <div className="text-2xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                                         15+
                                     </div>
                                     <div className="text-xs font-semibold text-slate-900">Years</div>
@@ -200,8 +200,8 @@ const Features = () => {
                                 transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
                                 className="absolute bottom-6 left-6"
                             >
-                                <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl p-4 shadow-2xl border border-slate-100">
-                                    <div className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+                                <div className="bg-linear-to-br from-white to-slate-50 rounded-2xl p-4 shadow-2xl border border-slate-100">
+                                    <div className="text-2xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
                                         3×
                                     </div>
                                     <div className="text-xs font-semibold text-slate-900">ISO</div>
@@ -211,7 +211,7 @@ const Features = () => {
                         </div>
 
                         {/* Background Decoration */}
-                        <div className="absolute -z-10 -inset-8 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 rounded-3xl blur-xl" />
+                        <div className="absolute -z-10 -inset-8 bg-linear-to-r from-cyan-500/5 to-blue-500/5 rounded-3xl blur-xl" />
                     </motion.div>
                 </motion.div>
 
@@ -224,7 +224,7 @@ const Features = () => {
                     className="mt-20"
                 >
                     <div className="relative rounded-3xl overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600" />
+                        <div className="absolute inset-0 bg-linear-to-r from-cyan-500 to-blue-600" />
                         <div className="relative p-8 sm:p-12">
                             <div className="grid md:grid-cols-3 gap-8 items-center">
                                 <div>

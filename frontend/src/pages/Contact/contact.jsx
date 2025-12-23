@@ -69,11 +69,11 @@ export default function Contact({ darkMode }) {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen pt-24 pb-24 bg-gradient-to-b from-white via-blue-50/10 to-white">
+            <div className="min-h-screen pt-24 pb-24 bg-linear-to-b from-white via-blue-50/10 to-white">
                 {/* Background Effects */}
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-teal-500/10 via-transparent to-transparent rounded-full blur-3xl" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/10 via-transparent to-transparent rounded-full blur-3xl" />
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-teal-500/10 via-transparent to-transparent rounded-full blur-3xl" />
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-blue-500/10 via-transparent to-transparent rounded-full blur-3xl" />
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,7 +89,7 @@ export default function Contact({ darkMode }) {
                             animate={{ scale: 1 }}
                             className="inline-block mb-6"
                         >
-                            <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-blue-500/10 border border-teal-500/20 backdrop-blur-sm">
+                            <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-r from-teal-500/10 to-blue-500/10 border border-teal-500/20 backdrop-blur-sm">
                                 <MessageSquare className="text-teal-500" size={16} />
                                 <span className="text-sm font-semibold text-teal-600 uppercase tracking-wider">
                                     Contact Us
@@ -98,11 +98,11 @@ export default function Contact({ darkMode }) {
                         </motion.div>
 
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-                            <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                                 Let's Start a
                             </span>
                             <br />
-                            <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
                                 Conversation
                             </span>
                         </h1>
@@ -128,7 +128,7 @@ export default function Contact({ darkMode }) {
                                 whileHover={{ y: -8 }}
                                 className={`relative p-6 rounded-2xl border ${info.borderColor} ${info.bgColor} backdrop-blur-sm transition-all duration-300`}
                             >
-                                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${info.color} flex items-center justify-center mb-4`}>
+                                <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${info.color} flex items-center justify-center mb-4`}>
                                     <info.icon className="text-white" size={24} />
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-900">{info.title}</h3>
@@ -136,7 +136,7 @@ export default function Contact({ darkMode }) {
                                     {info.value}
                                 </p>
                                 <p className="text-xs text-slate-500 mt-1">{info.subtext}</p>
-                                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r opacity-50"></div>
+                                <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r opacity-50"></div>
                             </motion.div>
                         ))}
                     </motion.div>
@@ -151,10 +151,10 @@ export default function Contact({ darkMode }) {
                             className="lg:col-span-3"
                         >
                             <div className="relative bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200">
-                                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-blue-500/5 to-transparent rounded-3xl" />
+                                <div className="absolute inset-0 bg-linear-to-br from-teal-500/5 via-blue-500/5 to-transparent rounded-3xl" />
 
                                 <div className="relative flex items-center gap-3 mb-8">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-blue-500 flex items-center justify-center">
+                                    <div className="w-12 h-12 rounded-xl bg-linear-to-br from-teal-500 to-blue-500 flex items-center justify-center">
                                         <MessageSquare className="text-white" size={24} />
                                     </div>
                                     <div>
@@ -249,7 +249,7 @@ export default function Contact({ darkMode }) {
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white font-semibold py-4 rounded-xl transition-all shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40 flex items-center justify-center gap-2"
+                                        className="w-full bg-linear-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white font-semibold py-4 rounded-xl transition-all shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/40 flex items-center justify-center gap-2"
                                     >
                                         <Send size={20} />
                                         Send Message
@@ -270,7 +270,7 @@ export default function Contact({ darkMode }) {
                             {/* Working Hours */}
                             <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 flex items-center justify-center">
+                                    <div className="w-10 h-10 rounded-lg bg-linear-to-br from-blue-500/10 to-cyan-500/10 flex items-center justify-center">
                                         <Clock className="w-5 h-5 text-blue-500" />
                                     </div>
                                     <h3 className="text-xl font-bold text-slate-900">Business Hours</h3>

@@ -48,7 +48,7 @@ const Appointment = () => {
     ]
 
     return (
-        <section className="relative py-20 overflow-hidden bg-gradient-to-b from-white via-blue-50/10 to-white">
+        <section className="relative py-20 overflow-hidden bg-linear-to-b from-white via-blue-50/10 to-white">
             <style jsx>{`
                 @keyframes float {
                     0%, 100% { transform: translateY(0px); }
@@ -75,8 +75,8 @@ const Appointment = () => {
 
             {/* Background Decorations */}
             <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute top-0 left-10% w-64 h-64 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 right-10% w-64 h-64 bg-gradient-to-r from-green-500/5 to-cyan-500/5 rounded-full blur-3xl" />
+                <div className="absolute top-0 left-10% w-64 h-64 bg-linear-to-r from-blue-500/5 to-purple-500/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 right-10% w-64 h-64 bg-linear-to-r from-green-500/5 to-cyan-500/5 rounded-full blur-3xl" />
 
                 {/* Grid Pattern */}
                 <div className="absolute inset-0 opacity-5">
@@ -97,7 +97,7 @@ const Appointment = () => {
                         className="space-y-8"
                     >
                         {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-200/50 backdrop-blur-sm">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-200/50 backdrop-blur-sm">
                             <Calendar className="w-4 h-4 text-blue-500" />
                             <span className="text-sm font-semibold text-blue-600">GET IN TOUCH</span>
                         </div>
@@ -106,7 +106,7 @@ const Appointment = () => {
                         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
                             <span className="text-gray-900">Request For</span>
                             <br />
-                            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                                 Appointment
                             </span>
                         </h1>
@@ -126,14 +126,14 @@ const Appointment = () => {
                                 alt="Appointment Consultation"
                                 className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
 
                             {/* Floating Elements */}
                             <div className="absolute top-4 left-4 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
                                 <div className="text-white font-semibold">Expert Team</div>
                             </div>
 
-                            <div className="absolute bottom-4 right-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                            <div className="absolute bottom-4 right-4 px-4 py-2 bg-linear-to-r from-blue-500 to-purple-500 rounded-lg">
                                 <div className="text-white font-semibold text-sm">Available 24/7</div>
                             </div>
                         </motion.div>
@@ -167,7 +167,7 @@ const Appointment = () => {
                         transition={{ duration: 0.6 }}
                         className="relative"
                     >
-                        <div className="absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-2xl float-animation" />
+                        <div className="absolute -top-6 -right-6 w-32 h-32 bg-linear-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-2xl float-animation" />
 
                         <form
                             onSubmit={handleSubmit}
@@ -178,7 +178,7 @@ const Appointment = () => {
                         >
                             {/* Form Header */}
                             <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
-                                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                                <div className="w-12 h-12 bg-linear-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
                                     <MessageSquare className="w-6 h-6 text-white" />
                                 </div>
                                 <div>
@@ -316,7 +316,7 @@ const Appointment = () => {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
-                                    className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 flex items-center justify-center gap-3 group"
+                                    className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 flex items-center justify-center gap-3 group"
                                 >
                                     <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                                     Send Message
@@ -337,7 +337,7 @@ const Appointment = () => {
                             transition={{ duration: 0.6, delay: 0.3 }}
                             className="mt-6 grid grid-cols-2 gap-4"
                         >
-                            <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                            <div className="p-4 bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
                                 <div className="flex items-center gap-3">
                                     <MapPin className="w-5 h-5 text-blue-500" />
                                     <div>
@@ -346,7 +346,7 @@ const Appointment = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
+                            <div className="p-4 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
                                 <div className="flex items-center gap-3">
                                     <CheckCircle className="w-5 h-5 text-green-500" />
                                     <div>

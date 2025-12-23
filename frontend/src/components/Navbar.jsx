@@ -59,8 +59,8 @@ const Navbar = () => {
     return (
         <nav
             className={`fixed w-full z-50 transition-all duration-500 ${isScrolled
-                ? "bg-gradient-to-b from-white/95 to-blue-50/95 backdrop-blur-xl shadow-2xl shadow-indigo-500/10"
-                : "bg-gradient-to-b from-white via-blue-50/50 to-transparent"
+                ? "bg-linear-to-b from-white/95 to-blue-50/95 backdrop-blur-xl shadow-2xl shadow-indigo-500/10"
+                : "bg-linear-to-b from-white via-blue-50/50 to-transparent"
                 }`}
             style={{
                 borderBottom: isScrolled
@@ -137,7 +137,7 @@ const Navbar = () => {
                             </div>
                             <div className="flex items-center gap-1 text-xs md:text-sm font-medium mt-0.5">
                                 <Sparkles className="w-3 h-3 text-purple-500" />
-                                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                <span className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                                     IT and Healthcare Company
                                 </span>
                             </div>
@@ -196,7 +196,7 @@ const Navbar = () => {
                                                         }}
                                                     >
                                                         <div className="flex items-center">
-                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 mr-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 -translate-x-2" />
+                                                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-indigo-500 to-purple-500 mr-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 -translate-x-2" />
                                                             <span className="font-medium text-gray-700 group-hover:text-indigo-600 group-hover:translate-x-2 transition-all duration-300">
                                                                 {item.name}
                                                             </span>
@@ -212,7 +212,7 @@ const Navbar = () => {
                                         className="px-4 py-2 rounded-lg font-semibold text-gray-800 hover:text-indigo-600 transition-all duration-300 relative group"
                                     >
                                         {link.name}
-                                        <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full" />
+                                        <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full" />
                                     </Link>
                                 )}
                             </div>
@@ -220,7 +220,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop CTA Button */}
-                    <div className="hidden lg:flex items-center space-x-4 flex-shrink-0">
+                    <div className="hidden lg:flex items-center space-x-4 shrink-0">
                         <Link
                             to="/contact"
                             className="relative px-6 py-3 font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl group overflow-hidden"
@@ -229,7 +229,7 @@ const Navbar = () => {
                                 color: "white"
                             }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <div className="relative z-10 flex items-center space-x-2">
                                 <Phone size={18} />
                                 <span>Get Started</span>

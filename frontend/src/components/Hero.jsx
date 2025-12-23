@@ -33,7 +33,7 @@ const Hero = () => {
     ]
 
     return (
-        <section className="relative pt-24 lg:pt-28 pb-16 lg:pb-24 overflow-hidden bg-gradient-to-b from-white via-blue-50/30 to-white">
+        <section className="relative pt-24 lg:pt-28 pb-16 lg:pb-24 overflow-hidden bg-linear-to-b from-white via-blue-50/30 to-white">
             <style jsx>{`
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(20px); }
@@ -89,8 +89,8 @@ const Hero = () => {
                         className="space-y-6 lg:space-y-8"
                     >
                         {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200 backdrop-blur-sm">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 animate-pulse" />
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-blue-500/10 to-indigo-500/10 border border-blue-200 backdrop-blur-sm">
+                            <div className="w-2 h-2 rounded-full bg-linear-to-r from-blue-500 to-indigo-500 animate-pulse" />
                             <span className="text-sm font-semibold text-blue-700">
                                 Trusted Healthcare IT Partner Since 2015
                             </span>
@@ -133,7 +133,7 @@ const Hero = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 flex items-center gap-2 group"
+                                className="px-8 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 flex items-center gap-2 group"
                             >
                                 Explore Services
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
@@ -151,7 +151,7 @@ const Hero = () => {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
-                                    className="text-center p-3 bg-gradient-to-b from-white to-blue-50/30 rounded-xl border border-gray-100 hover:shadow-md transition-shadow duration-300"
+                                    className="text-center p-3 bg-linear-to-b from-white to-blue-50/30 rounded-xl border border-gray-100 hover:shadow-md transition-shadow duration-300"
                                 >
                                     <div className="flex flex-col items-center gap-1">
                                         <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
@@ -168,7 +168,7 @@ const Hero = () => {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="relative h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl"
+                        className="relative h-125 lg:h-150 rounded-2xl overflow-hidden shadow-2xl"
                     >
                         {/* Main Image */}
                         <div className="absolute inset-0">
@@ -184,7 +184,7 @@ const Hero = () => {
                                         className="w-full h-full object-cover"
                                     />
                                     {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
                                 </div>
                             ))}
                         </div>
@@ -196,8 +196,8 @@ const Hero = () => {
                                     key={index}
                                     onClick={() => setCurrentImage(index)}
                                     className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentImage
-                                            ? 'w-8 bg-white'
-                                            : 'bg-white/50 hover:bg-white/80'
+                                        ? 'w-8 bg-white'
+                                        : 'bg-white/50 hover:bg-white/80'
                                         }`}
                                 />
                             ))}
@@ -212,7 +212,7 @@ const Hero = () => {
                                 className="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg max-w-md"
                             >
                                 <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                                    <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
                                         <span className="text-white text-xl font-bold">M</span>
                                     </div>
                                     <div>
@@ -238,7 +238,7 @@ const Hero = () => {
 
                             {/* Floating Elements */}
                             <motion.div
-                                className="absolute top-6 right-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-lg shadow-lg float-animation"
+                                className="absolute top-6 right-6 bg-linear-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-lg shadow-lg float-animation"
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.5, delay: 0.6 }}
@@ -272,7 +272,7 @@ const Hero = () => {
                     transition={{ duration: 0.6, delay: 0.8 }}
                     className="mt-12 lg:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+                    <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                                 <Headphones className="w-5 h-5 text-blue-600" />
@@ -284,7 +284,7 @@ const Hero = () => {
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
+                    <div className="bg-linear-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                                 <Shield className="w-5 h-5 text-green-600" />
@@ -296,7 +296,7 @@ const Hero = () => {
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl p-6 border border-purple-100">
+                    <div className="bg-linear-to-r from-purple-50 to-violet-50 rounded-xl p-6 border border-purple-100">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                                 <Globe className="w-5 h-5 text-purple-600" />
