@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom"
 import SecurityGate from "./SecurityGate"
 import Sidebar from "../../components/dashboard/sidebar"
 import DashboardContent from "../../components/dashboard/dashboard-content"
+import axios from "axios";
 
 export default function DashboardPage() {
     const [activeSection, setActiveSection] = useState("overview")
@@ -13,17 +14,26 @@ export default function DashboardPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const location = useLocation()
 
-    // Check if already authenticated (could be stored in localStorage/sessionStorage)
     useEffect(() => {
-        const storedAuth = localStorage.getItem("dashboard_auth")
-        if (storedAuth === "true") {
-            setIsAuthenticated(true)
-        }
+        const checkAuth = async () => {
+            try {
+                const data = await axios.get("http://localhost:5000/api/auth/check", { withCredentials: true });
+                if (res.data.authenticated) {
+                    setIsAuthenticated(true);
+                }
+            }
+            catch (err) {
+                setIsAuthenticated(false);
+            }
+        };
+        checkAuth();
+
     }, [])
+
 
     const handleLoginSuccess = () => {
         setIsAuthenticated(true)
-        localStorage.setItem("dashboard_auth", "true")
+
     }
 
     // If not authenticated, show security gate
@@ -38,6 +48,7 @@ export default function DashboardPage() {
                 setActiveSection={setActiveSection}
                 isOpen={sidebarOpen}
                 setIsOpen={setSidebarOpen}
+
             />
             <DashboardContent activeSection={activeSection} sidebarOpen={sidebarOpen} />
         </div>

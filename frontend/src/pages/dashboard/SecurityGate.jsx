@@ -1,9 +1,9 @@
-// pages/dashboard/SecurityGate.jsx
 "use client"
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Lock, User, Eye, EyeOff, AlertCircle } from "lucide-react"
+import axios from "axios"
 
 export default function SecurityGate({ onSuccess }) {
     const [name, setName] = useState("")
@@ -13,22 +13,27 @@ export default function SecurityGate({ onSuccess }) {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         setError("")
         setLoading(true)
+        try {
+            const res = await axios.post("http://localhost:5000/api/auth/login",
+                { name, password },
+                { withCredentials: true }
+            )
+            onSuccess()
+            navigate("/dashboard-maaz");
+        }
+        catch (error) {
+            setError(error.response?.data?.message || "invalid credentials")
+        }
+        finally {
+            setLoading(false);
+        }
 
-        // Simulate API call
-        setTimeout(() => {
-            // Static credentials for now
-            if (name === "Ahmed" && password === "12345678") {
-                setLoading(false)
-                onSuccess() // Call the success callback
-            } else {
-                setLoading(false)
-                setError("Invalid credentials. Try: Ahmed / 12345678")
-            }
-        }, 800)
+
+
     }
 
     return (
