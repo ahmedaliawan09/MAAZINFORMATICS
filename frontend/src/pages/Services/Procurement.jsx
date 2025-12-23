@@ -30,7 +30,7 @@ export default function Procurement({ darkMode }) {
     return (
         <>
             <Navbar />
-            <div className={`min-h-screen pt-20 pb-16 overflow-hidden ${darkMode ? "bg-gradient-to-b from-slate-950 to-slate-900" : "bg-gradient-to-b from-white to-slate-50"}`}>
+            <div className={`min-h-screen pt-20 pb-16 overflow-hidden ${darkMode ? "bg-linear-to-b from-slate-950 to-slate-900" : "bg-linear-to-b from-white to-slate-50"}`}>
                 {/* Background Elements */}
                 <div className="fixed inset-0 pointer-events-none">
                     <div className={`absolute top-1/4 left-1/4 w-72 h-72 rounded-full ${darkMode ? "bg-amber-900/5" : "bg-amber-100/10"} blur-3xl`} />
@@ -51,17 +51,17 @@ export default function Procurement({ darkMode }) {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.1 }}
-                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 mb-6"
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-linear-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 mb-6"
                                 >
                                     <Sparkles className="w-4 h-4 text-amber-500" />
-                                    <span className="text-sm font-medium bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+                                    <span className="text-sm font-medium bg-linear-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
                                         Professional Procurement
                                     </span>
                                 </motion.div>
 
                                 <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight ${darkMode ? "text-white" : "text-slate-900"}`}>
                                     <span className="block">Procurement</span>
-                                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-500">
+                                    <span className="block text-transparent bg-clip-text bg-linear-to-r from-amber-600 to-orange-500">
                                         Management
                                     </span>
                                 </h1>
@@ -72,8 +72,8 @@ export default function Procurement({ darkMode }) {
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4">
-                                    <button className="group relative px-8 py-4 bg-gradient-to-r from-amber-600 to-orange-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-amber-500/25 transition-all duration-300 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-amber-700 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    <button className="group relative px-8 py-4 bg-linear-to-r from-amber-600 to-orange-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-amber-500/25 transition-all duration-300 overflow-hidden">
+                                        <div className="absolute inset-0 bg-linear-to-r from-amber-700 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                         <span className="relative flex items-center gap-2">
                                             Request a Quote
                                             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -97,12 +97,12 @@ export default function Procurement({ darkMode }) {
                                 className="relative"
                             >
                                 <div className={`relative rounded-2xl overflow-hidden ${darkMode
-                                    ? "bg-gradient-to-br from-slate-800/50 to-slate-900/50"
-                                    : "bg-gradient-to-br from-white to-amber-50"
+                                    ? "bg-linear-to-br from-slate-800/50 to-slate-900/50"
+                                    : "bg-linear-to-br from-white to-amber-50"
                                     } border ${darkMode ? "border-slate-800" : "border-slate-100"} shadow-lg`}>
                                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.05),transparent_70%)]" />
 
-                                    <div className="relative p-8 flex flex-col items-center justify-center min-h-[320px]">
+                                    <div className="relative p-8 flex flex-col items-center justify-center min-h-80">
                                         <motion.div
                                             animate={{
                                                 y: [0, -10, 0],
@@ -115,7 +115,7 @@ export default function Procurement({ darkMode }) {
                                             }}
                                             className="relative mb-6"
                                         >
-                                            <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-400 rounded-full blur-2xl opacity-20" />
+                                            <div className="absolute inset-0 bg-linear-to-r from-amber-500 to-orange-400 rounded-full blur-2xl opacity-20" />
                                             <Package className="w-24 h-24 text-amber-500 relative z-10" />
                                         </motion.div>
                                     </div>
@@ -146,7 +146,7 @@ export default function Procurement({ darkMode }) {
                             </motion.div>
                             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}>
                                 Why Choose Our
-                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-500">
+                                <span className="block text-transparent bg-clip-text bg-linear-to-r from-amber-600 to-orange-500">
                                     Procurement Services
                                 </span>
                             </h2>
@@ -161,13 +161,13 @@ export default function Procurement({ darkMode }) {
                                     transition={{ delay: 0.05 * index + 0.4 }}
                                     whileHover={{ y: -3, scale: 1.02 }}
                                     className={`group relative p-6 rounded-2xl transition-all duration-300 ${darkMode
-                                        ? "bg-gradient-to-br from-slate-800/40 to-slate-900/30 hover:from-slate-800 hover:to-slate-800"
+                                        ? "bg-linear-to-br from-slate-800/40 to-slate-900/30 hover:from-slate-800 hover:to-slate-800"
                                         : "bg-white hover:shadow-lg"
                                         } border ${darkMode ? "border-slate-800/40 hover:border-amber-500/20" : "border-slate-100 hover:border-amber-200"}`}
                                 >
                                     <div className={`mb-4 p-3 rounded-xl w-fit ${darkMode
-                                        ? "bg-gradient-to-br from-amber-900/20 to-orange-900/15"
-                                        : "bg-gradient-to-br from-amber-50 to-orange-50"
+                                        ? "bg-linear-to-br from-amber-900/20 to-orange-900/15"
+                                        : "bg-linear-to-br from-amber-50 to-orange-50"
                                         }`}>
                                         <feature.icon className={`w-8 h-8 ${darkMode ? "text-amber-400" : "text-amber-600"}`} />
                                     </div>
@@ -212,7 +212,7 @@ export default function Procurement({ darkMode }) {
                             </motion.div>
                             <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}>
                                 Complete Procurement
-                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">
+                                <span className="block text-transparent bg-clip-text bg-linear-to-r from-orange-600 to-amber-500">
                                     Solutions
                                 </span>
                             </h2>
@@ -226,7 +226,7 @@ export default function Procurement({ darkMode }) {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.6 + index * 0.1 }}
                                     className={`group relative p-6 rounded-2xl transition-all duration-300 ${darkMode
-                                        ? "bg-gradient-to-br from-slate-800/40 to-slate-900/30 hover:from-slate-800 hover:to-slate-800"
+                                        ? "bg-linear-to-br from-slate-800/40 to-slate-900/30 hover:from-slate-800 hover:to-slate-800"
                                         : "bg-white hover:shadow-lg"
                                         } border ${darkMode ? "border-slate-800/40 hover:border-orange-500/20" : "border-slate-100 hover:border-orange-200"}`}
                                 >
@@ -250,8 +250,8 @@ export default function Procurement({ darkMode }) {
                         className="mb-20"
                     >
                         <div className={`rounded-2xl p-8 ${darkMode
-                            ? "bg-gradient-to-br from-slate-800/30 to-slate-900/30 border border-slate-800/40"
-                            : "bg-gradient-to-br from-amber-50/30 to-orange-50/30 border border-slate-100"
+                            ? "bg-linear-to-br from-slate-800/30 to-slate-900/30 border border-slate-800/40"
+                            : "bg-linear-to-br from-amber-50/30 to-orange-50/30 border border-slate-100"
                             }`}>
                             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {stats.map((stat, index) => (
@@ -262,7 +262,7 @@ export default function Procurement({ darkMode }) {
                                         transition={{ delay: 0.8 + index * 0.1 }}
                                         className="text-center"
                                     >
-                                        <div className={`text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent`}>
+                                        <div className={`text-4xl md:text-5xl font-bold mb-2 bg-linear-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent`}>
                                             {stat.value}
                                         </div>
                                         <p className={`text-base font-medium mb-1 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>
@@ -284,7 +284,7 @@ export default function Procurement({ darkMode }) {
                         transition={{ delay: 0.9 }}
                         className="relative overflow-hidden rounded-2xl"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-orange-500" />
+                        <div className="absolute inset-0 bg-linear-to-r from-amber-600 to-orange-500" />
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),transparent_70%)]" />
 
 

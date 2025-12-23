@@ -66,7 +66,7 @@ const Hero = () => {
     return (
         <section
             ref={containerRef}
-            className="relative pt-16 pb-12 overflow-hidden bg-gradient-to-b from-gray-50 to-white"
+            className="relative pt-16 pb-12 overflow-hidden bg-linear-to-b from-gray-50 to-white"
         >
             {/* Minimal 3D Background */}
             <div className="absolute top-10 right-10 w-40 h-40 opacity-10">
@@ -87,7 +87,7 @@ const Hero = () => {
                         <h1 className="text-3xl mt-6 md:text-4xl lg:text-5xl font-bold text-gray-900 leading-snug">
                             Transforming
                             <br />
-                            <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                                 Healthcare IT
                             </span>
                             <br />
@@ -141,7 +141,7 @@ const Hero = () => {
                     {/* Right Content - Parallax Image Carousel */}
                     <motion.div
                         style={{ y: parallaxY, opacity }}
-                        className="relative h-[400px] rounded-xl overflow-hidden shadow-xl border border-gray-100"
+                        className="relative h-100 rounded-xl overflow-hidden shadow-xl border border-gray-100"
                     >
                         {/* Parallax Images */}
                         <div className="absolute inset-0">
@@ -161,7 +161,7 @@ const Hero = () => {
                                         alt={`Healthcare Service ${index + 1}`}
                                         className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                                 </motion.div>
                             ))}
                         </div>

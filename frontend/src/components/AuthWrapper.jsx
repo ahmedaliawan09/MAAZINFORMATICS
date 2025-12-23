@@ -68,7 +68,7 @@ const AuthWrapper = ({ children }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-4">
             {/* Animated Background */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
@@ -85,7 +85,7 @@ const AuthWrapper = ({ children }) => {
                 <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl mb-4">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-500 to-cyan-500 rounded-2xl mb-4">
                             <Lock className="w-8 h-8 text-white" />
                         </div>
                         <h1 className="text-2xl font-bold text-white mb-2">
@@ -159,7 +159,7 @@ const AuthWrapper = ({ children }) => {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-300 rounded-lg p-3"
                                 >
-                                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                                    <AlertCircle className="w-5 h-5 shrink-0" />
                                     <span className="text-sm">{error}</span>
                                 </motion.div>
                             )}
@@ -171,7 +171,7 @@ const AuthWrapper = ({ children }) => {
                             disabled={isLoading}
                             className={`w-full py-3 rounded-xl font-semibold transition-all ${isLoading
                                 ? 'bg-blue-500/50 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:shadow-2xl hover:shadow-blue-500/30'
+                                : 'bg-linear-to-r from-blue-500 to-cyan-500 hover:shadow-2xl hover:shadow-blue-500/30'
                                 }`}
                         >
                             {isLoading ? (
@@ -188,7 +188,7 @@ const AuthWrapper = ({ children }) => {
                     {/* Security Notice */}
                     <div className="mt-6 pt-6 border-t border-white/10">
                         <div className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
                             <p className="text-xs text-blue-200/60">
                                 Your credentials are securely processed. All dashboard activities are logged for security purposes.
                             </p>
@@ -197,7 +197,7 @@ const AuthWrapper = ({ children }) => {
                 </div>
 
                 {/* Background Pattern */}
-                <div className="absolute -z-10 inset-0 bg-gradient-to-r from-blue-500/5 to-transparent rounded-2xl" />
+                <div className="absolute -z-10 inset-0 bg-linear-to-r from-blue-500/5 to-transparent rounded-2xl" />
             </motion.div>
 
             {/* Animated Particles */}
