@@ -1,6 +1,6 @@
 "use client"
 import { Menu, X, LayoutGrid, Settings, Users, FileText, BarChart3, HelpCircle, Home, LogOut } from "lucide-react"
-
+import axios from "axios"
 const navigationItems = [
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "pages", label: "Pages", icon: FileText },
@@ -9,8 +9,21 @@ const navigationItems = [
     { id: "settings", label: "Settings", icon: Settings },
     { id: "help", label: "Help", icon: HelpCircle },
 ]
+const handleLogout = async () => {
+    try {
+        await axios.post(
+            "http://localhost:5000/api/auth/logout",
+            {},
+            { withCredentials: true }
+        );
 
-export default function Sidebar({ activeSection, setActiveSection, isOpen, setIsOpen }) {
+        window.location.reload(); // simplest & safe
+    } catch (error) {
+        console.error("Logout failed", error);
+    }
+};
+
+export default function Sidebar({ activeSection, setActiveSection, isOpen, setIsOpen, user }) {
     return (
         <>
             {/* Mobile Menu Button */}
@@ -49,11 +62,22 @@ export default function Sidebar({ activeSection, setActiveSection, isOpen, setIs
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                            <span className="text-white font-semibold">A</span>
+                            <span className="text-white font-semibold">
+                                {user?.name?.charAt(0).toUpperCase()}
+                            </span>
                         </div>
                         <div>
-                            <p className="font-medium">Admin User</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">admin@example.com</p>
+                            <p className="font-medium">
+                                {user?.name}
+                            </p>
+
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {user?.email}
+                            </p>
+
+                            <p className="text-xs text-blue-600 dark:text-blue-400 capitalize">
+                                {user?.role}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +113,15 @@ export default function Sidebar({ activeSection, setActiveSection, isOpen, setIs
 
                 {/* Footer Section */}
                 <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 mb-3 rounded-lg
+      text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20
+      transition-all duration-200"
+                    >
+                        <LogOut size={18} />
+                        <span className="font-medium text-sm">Logout</span>
+                    </button>
                     <div className="mt-4 text-xs text-gray-500 dark:text-gray-400 px-4">
                         <p>© 2024 Content Hub</p>
                         <p className="mt-1">All rights reserved</p>

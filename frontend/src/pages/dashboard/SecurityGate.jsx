@@ -22,8 +22,7 @@ export default function SecurityGate({ onSuccess }) {
                 { name, password },
                 { withCredentials: true }
             )
-            onSuccess()
-            navigate("/dashboard-maaz");
+            onSuccess(res.data.user);
         }
         catch (error) {
             setError(error.response?.data?.message || "invalid credentials")

@@ -12,34 +12,46 @@ export default function DashboardPage() {
     const [activeSection, setActiveSection] = useState("overview")
     const [sidebarOpen, setSidebarOpen] = useState(true)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
-    const location = useLocation()
+    const [user, setUser] = useState(null);
+
 
     useEffect(() => {
         const checkAuth = async () => {
+            // 🚫 already logged in via login → skip
+            if (user) return;
+
             try {
-                const data = await axios.get("http://localhost:5000/api/auth/check", { withCredentials: true });
+                const res = await axios.get(
+                    "http://localhost:5000/api/auth/check",
+                    { withCredentials: true }
+                );
+
                 if (res.data.authenticated) {
                     setIsAuthenticated(true);
+                    setUser(res.data.user);
                 }
-            }
-            catch (err) {
+            } catch {
                 setIsAuthenticated(false);
             }
         };
+
         checkAuth();
+    }, [user]); // 👈 IMPORTANT
 
-    }, [])
 
 
-    const handleLoginSuccess = () => {
-        setIsAuthenticated(true)
-
-    }
+    const handleLoginSuccess = (userData) => {
+        console.log("LOGIN USER:", userData);
+        setIsAuthenticated(true);
+        setUser(userData);
+    };
 
     // If not authenticated, show security gate
-    if (!isAuthenticated) {
+    // If not authenticated OR user not loaded yet, show security gate
+    if (!isAuthenticated || !user) {
         return <SecurityGate onSuccess={handleLoginSuccess} />
     }
+
 
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -48,7 +60,7 @@ export default function DashboardPage() {
                 setActiveSection={setActiveSection}
                 isOpen={sidebarOpen}
                 setIsOpen={setSidebarOpen}
-
+                user={user}
             />
             <DashboardContent activeSection={activeSection} sidebarOpen={sidebarOpen} />
         </div>
