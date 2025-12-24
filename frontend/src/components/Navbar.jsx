@@ -4,12 +4,28 @@ import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { Phone, ChevronDown, Menu, X, Sparkles } from "lucide-react"
 import maazlogo from "../assets/maazlogo.png"
-
+import axios from "axios"
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [activeDropdown, setActiveDropdown] = useState(null)
     const [isScrolled, setIsScrolled] = useState(false)
+    const [services, setServices] = useState([]) // Dynamic services
     const timeoutRef = useRef(null)
+
+    const fetchServices = async () => {
+        try {
+            const res = await axios.get("http://localhost:5000/api/service/getservices")
+            setServices(res.data.services || [])
+        } catch (err) {
+            console.error("Failed to load services", err)
+            setServices([])
+        }
+    }
+    useEffect(() => {
+        fetchServices()
+        const interval = setInterval(fetchServices, 3000) // Refresh every 10s
+        return () => clearInterval(interval)
+    }, [])
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -31,17 +47,10 @@ const Navbar = () => {
         {
             name: "Services",
             hasDropdown: true,
-            items: [
-                { name: "Medical Billing", href: "/services/medical-billing" },
-                { name: "Call Center", href: "/services/call-center" },
-                { name: "Answering Service", href: "/services/answering-service" },
-                { name: "Procurement", href: "/services/procurement" },
-                { name: "EMR Data Entry", href: "/services/emr-data-entry" },
-                { name: "Credentialing", href: "/services/credentialing" },
-                { name: "EPA", href: "/services/epa" },
-                { name: "Content Writing", href: "/services/content-writing" },
-                { name: "IT Services", href: "/services/it-services" },
-            ],
+            items: services.map(service => ({
+                name: service.service_name,
+                href: `services/${service.id}`
+            })),
         },
         { name: "Career", href: "/career" },
         { name: "Contact", href: "/contact" },

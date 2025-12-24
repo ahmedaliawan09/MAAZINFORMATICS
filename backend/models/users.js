@@ -26,3 +26,9 @@ export const CreateUser = async ({ name, email, password, role }) => {
     return result;
 
 }
+export const getAllUsers = async () => {
+    const [rows] = await db.promise().execute(
+        "SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC"
+    );
+    return rows;
+}

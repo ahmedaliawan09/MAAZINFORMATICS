@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import helmet from "helmet"
 import cookieparser from "cookie-parser"
 import auth from "./routes/auth.js"
+import service from "./routes/service.js"
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,6 @@ app.use(cors(
 ));
 
 app.use("/api/auth", auth);
-
+app.use("/api/service", service);
 
 export default app;

@@ -1,29 +1,36 @@
 "use client"
-import { Menu, X, LayoutGrid, Settings, Users, FileText, BarChart3, HelpCircle, Home, LogOut } from "lucide-react"
+import { Menu, X, LayoutGrid, Settings, Users, FileText, BarChart3, HelpCircle, LogOut } from "lucide-react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom";  // ✅ Import theek hai
+
 const navigationItems = [
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "pages", label: "Pages", icon: FileText },
+    { id: "services", label: "Services", icon: BarChart3 },
     { id: "users", label: "Users", icon: Users },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
     { id: "help", label: "Help", icon: HelpCircle },
 ]
-const handleLogout = async () => {
-    try {
-        await axios.post(
-            "http://localhost:5000/api/auth/logout",
-            {},
-            { withCredentials: true }
-        );
-
-        window.location.reload(); // simplest & safe
-    } catch (error) {
-        console.error("Logout failed", error);
-    }
-};
 
 export default function Sidebar({ activeSection, setActiveSection, isOpen, setIsOpen, user }) {
+    const navigate = useNavigate();  // ✅ Ab andar hai – hook rule follow ho raha
+
+    const handleLogout = async () => {  // ✅ Ab andar hai
+        try {
+            await axios.post(
+                "http://localhost:5000/api/auth/logout",
+                {},
+                { withCredentials: true }
+            );
+        } catch (error) {
+            console.error("Logout API failed", error);
+        } finally {
+            navigate("/", { replace: true });
+            window.location.reload();
+        }
+    };
+
     return (
         <>
             {/* Mobile Menu Button */}
@@ -33,28 +40,25 @@ export default function Sidebar({ activeSection, setActiveSection, isOpen, setIs
                 </button>
                 <div className="ml-4 flex items-center gap-2">
                     <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold">CH</span>
+                        <span className="text-white font-bold">MI</span>
                     </div>
-                    <h1 className="text-lg font-semibold">Content Hub</h1>
+                    <h1 className="text-lg font-semibold">Maaz Informatics</h1>
                 </div>
             </div>
 
-            {/* Overlay for mobile */}
+            {/* Overlay */}
             {isOpen && <div className="lg:hidden fixed inset-0 bg-black/50 z-30 top-16" onClick={() => setIsOpen(false)} />}
 
             {/* Sidebar */}
-            <aside
-                className={`fixed lg:relative w-64 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-40 flex flex-col transition-transform duration-300 top-16 lg:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-                    }`}
-            >
-                {/* Logo Section */}
+            <aside className={`fixed lg:relative w-64 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 z-40 flex flex-col transition-transform duration-300 top-16 lg:top-0 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+                {/* Logo */}
                 <div className="hidden lg:flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-700">
                     <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold">CH</span>
+                        <span className="text-white font-bold">MI</span>
                     </div>
                     <div>
                         <h1 className="text-lg font-semibold">Maaz Informatics</h1>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Dashboard </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Dashboard</p>
                     </div>
                 </div>
 
@@ -67,17 +71,9 @@ export default function Sidebar({ activeSection, setActiveSection, isOpen, setIs
                             </span>
                         </div>
                         <div>
-                            <p className="font-medium">
-                                {user?.name}
-                            </p>
-
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {user?.email}
-                            </p>
-
-                            <p className="text-xs text-blue-600 dark:text-blue-400 capitalize">
-                                {user?.role}
-                            </p>
+                            <p className="font-medium">{user?.name}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400 capitalize">{user?.role}</p>
                         </div>
                     </div>
                 </div>
@@ -102,22 +98,18 @@ export default function Sidebar({ activeSection, setActiveSection, isOpen, setIs
                                 >
                                     <Icon size={20} />
                                     <span className="font-medium text-sm">{item.label}</span>
-                                    {isActive && (
-                                        <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
-                                    )}
+                                    {isActive && <div className="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>}
                                 </button>
                             )
                         })}
                     </div>
                 </nav>
 
-                {/* Footer Section */}
+                {/* Logout Button */}
                 <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 mb-3 rounded-lg
-      text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20
-      transition-all duration-200"
+                        className="w-full flex items-center gap-3 px-4 py-3 mb-3 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
                     >
                         <LogOut size={18} />
                         <span className="font-medium text-sm">Logout</span>

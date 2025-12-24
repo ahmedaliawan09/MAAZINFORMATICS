@@ -6,11 +6,12 @@ import UsersSection from "./sections/users"
 import AnalyticsSection from "./sections/analytics"
 import SettingsSection from "./sections/settings"
 import HelpSection from "./sections/help"
-
+import ServicesSection from "./sections/services"
 const sections = {
     overview: <OverviewSection />,
     pages: <PagesSection />,
     users: <UsersSection />,
+    services: <ServicesSection />,
     analytics: <AnalyticsSection />,
     settings: <SettingsSection />,
     help: <HelpSection />,

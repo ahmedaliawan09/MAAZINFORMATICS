@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import { findUserByName, CreateUser, findUserById, changePasswordd } from "../models/users.js";
+import { findUserByName, CreateUser, findUserById, changePasswordd, getAllUsers } from "../models/users.js";
 
 
 export const login = async (req, res) => {
@@ -24,9 +24,9 @@ export const login = async (req, res) => {
             { expiresIn: "1d" },
         );
         res.cookie("token", token, {
-            httpOnly: false,
+            httpOnly: true,
             secure: false,
-            sameSite: "lax",
+            sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000, // 1 day
         })
 
@@ -65,9 +65,9 @@ export const logout = async (req, res) => {
 
     try {
         res.clearCookie("token", {
-            httpOnly: false,
+            httpOnly: true,
             secure: false,
-            sameSite: "lax",
+            sameSite: 'strict',
         });
         res.json({ message: "user logout successfully" });
     }
@@ -88,7 +88,12 @@ export const checkAuth = async (req, res) => {
     }
     catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "server error" });
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+        });
+        return res.json({ authenticated: false });
     }
 }
 
@@ -120,3 +125,12 @@ export const changePassword = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 }
+export const getUsers = async (req, res) => {
+    try {
+        const users = await getAllUsers();
+        res.status(200).json({ users });
+    } catch (error) {
+        console.error("Get users error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
