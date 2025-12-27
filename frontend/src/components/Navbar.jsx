@@ -23,7 +23,7 @@ const Navbar = () => {
     }
     useEffect(() => {
         fetchServices()
-        const interval = setInterval(fetchServices, 3000) // Refresh every 10s
+        const interval = setInterval(fetchServices, 3000)
         return () => clearInterval(interval)
     }, [])
 
@@ -44,12 +44,13 @@ const Navbar = () => {
                 { name: "Memberships", href: "/memberships" },
             ],
         },
+        // In Navbar.jsx, update the services dropdown:
         {
             name: "Services",
             hasDropdown: true,
             items: services.map(service => ({
                 name: service.service_name,
-                href: `services/${service.id}`
+                href: `/services/${service.slug}`  // ← SLUG ONLY, no ID fallback
             })),
         },
         { name: "Career", href: "/career" },

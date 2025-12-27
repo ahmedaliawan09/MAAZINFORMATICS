@@ -111,7 +111,7 @@ export default function UsersSection() {
 
         return (
             <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${roleConfig.color} flex items-center justify-center`}>
+                <div className={`w-9 h-9 rounded-lg bg-linear-to-br ${roleConfig.color} flex items-center justify-center`}>
                     <Shield size={18} className="text-white" />
                 </div>
                 <div>
@@ -136,7 +136,7 @@ export default function UsersSection() {
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setShowModal(true)}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-xl font-medium shadow-md hover:shadow-lg flex items-center gap-2 transition-all"
+                        className="bg-linear-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-xl font-medium shadow-md hover:shadow-lg flex items-center gap-2 transition-all"
                     >
                         <Sparkles size={16} />
                         Add User
@@ -191,7 +191,7 @@ export default function UsersSection() {
                                             >
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${role.color} p-0.5`}>
+                                                        <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${role.color} p-0.5`}>
                                                             <div className="w-full h-full bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center text-white font-bold">
                                                                 {user.name.charAt(0).toUpperCase()}
                                                             </div>
@@ -247,7 +247,7 @@ export default function UsersSection() {
                                     {/* Compact Header */}
                                     <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
                                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                            <div className="p-1.5 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg">
+                                            <div className="p-1.5 bg-linear-to-br from-blue-600 to-purple-600 rounded-lg">
                                                 <User size={20} className="text-white" />
                                             </div>
                                             Create New User
@@ -370,14 +370,14 @@ export default function UsersSection() {
                                                                         }}
                                                                         className={`w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-gray-700/50 transition ${isSelected ? "bg-blue-500/10" : ""}`}
                                                                     >
-                                                                        <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${config.color} flex items-center justify-center flex-shrink-0`}>
+                                                                        <div className={`w-9 h-9 rounded-lg bg-linear-to-br ${config.color} flex items-center justify-center shrink-0`}>
                                                                             <Shield size={18} className="text-white" />
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
                                                                             <p className="font-medium text-white text-sm truncate">{option.label}</p>
                                                                             <p className="text-xs text-gray-400 truncate">{option.description}</p>
                                                                         </div>
-                                                                        {isSelected && <Check size={18} className="text-blue-500 flex-shrink-0" />}
+                                                                        {isSelected && <Check size={18} className="text-blue-500 shrink-0" />}
                                                                     </button>
                                                                 )
                                                             })}
@@ -401,7 +401,7 @@ export default function UsersSection() {
                                                 whileTap={{ scale: 0.98 }}
                                                 type="submit"
                                                 disabled={isSubmitting}
-                                                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl disabled:opacity-70 transition-all flex items-center gap-2"
+                                                className="px-6 py-2.5 bg-linear-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl disabled:opacity-70 transition-all flex items-center gap-2"
                                             >
                                                 {isSubmitting ? (
                                                     <>
