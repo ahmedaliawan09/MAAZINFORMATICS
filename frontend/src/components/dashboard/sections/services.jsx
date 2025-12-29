@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 import {
-    Plus, Trash2, Save, Loader2, ChevronLeft, Settings, Edit2, X, Check,
-    LayoutDashboard, Palette, Type, Layers, Sparkles
+    Plus, Trash2, Save, Loader2, ChevronLeft, Edit2, X, Check,
+    LayoutDashboard, Palette, Type, Layers, Sparkles, ChevronRight,
+    Eye, Copy, Search, MoreVertical, Grid, List, Filter,
+    ArrowUpRight, Calendar, Users, TrendingUp, BarChart3
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -31,6 +33,9 @@ export default function ServicesSection() {
     const [loading, setLoading] = useState(false)
     const [saving, setSaving] = useState(false)
     const [errorMsg, setErrorMsg] = useState("")
+    const [query, setQuery] = useState("")
+    const [viewMode, setViewMode] = useState("grid")
+    const [activeTab, setActiveTab] = useState("content")
 
     const fetchServices = async () => {
         try {
@@ -145,9 +150,10 @@ export default function ServicesSection() {
                 withCredentials: true
             })
 
+            // Success notification
             const successEl = document.createElement('div')
             successEl.className = 'fixed top-4 right-4 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg z-50'
-            successEl.textContent = '✅ All content saved successfully!'
+            successEl.textContent = '✅ Content saved successfully!'
             document.body.appendChild(successEl)
             setTimeout(() => successEl.remove(), 3000)
 
@@ -230,7 +236,6 @@ export default function ServicesSection() {
         })
     }
 
-
     const updateItem = (sectionIndex, itemIndex, field, value) => {
         setSelectedService(prev => {
             const sections = [...prev.sections]
@@ -250,505 +255,602 @@ export default function ServicesSection() {
     // List View
     if (!selectedService) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-900 p-4 md:p-6">
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="max-w-6xl mx-auto"
-                >
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg">
-                                <LayoutDashboard className="w-6 h-6 text-white" />
-                            </div>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+                {/* Header */}
+                <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+                    <div className="px-6 py-4">
+                        <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Services Management</h1>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Manage your service pages</p>
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Services Manager</h1>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage and customize service pages</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search services..."
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        className="pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    />
+                                </div>
+                                <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                    <button
+                                        onClick={() => setViewMode("grid")}
+                                        className={`px-3 py-2 ${viewMode === "grid" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400" : "text-gray-500"}`}
+                                    >
+                                        <Grid className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode("list")}
+                                        className={`px-3 py-2 ${viewMode === "list" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400" : "text-gray-500"}`}
+                                    >
+                                        <List className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="p-6">
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Services</p>
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{services.length}</h3>
+                                </div>
+                                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                    <Layers className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Active</p>
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{services.length}</h3>
+                                </div>
+                                <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                    <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Performance</p>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mt-1">Excellent</h3>
+                                </div>
+                                <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                                    <BarChart3 className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <AnimatePresence>
-                        {errorMsg && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 border border-red-200 dark:border-red-800 rounded-xl"
-                            >
-                                <div className="flex items-center gap-3 text-red-700 dark:text-red-300">
-                                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                                    {errorMsg}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-8 shadow-lg"
-                    >
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
-                                <Plus className="w-5 h-5 text-white" />
+                    {/* Add Service Card */}
+                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 mb-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-xl font-bold text-white">Create New Service</h3>
+                                <p className="text-purple-100 mt-1">Add a new service page to your portfolio</p>
                             </div>
-                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Add New Service</h2>
-                        </div>
-                        <form onSubmit={handleAddService} className="flex flex-col sm:flex-row gap-3">
-                            <div className="flex-1 relative">
+                            <form onSubmit={handleAddService} className="flex gap-2">
                                 <input
+                                    type="text"
                                     value={newServiceName}
                                     onChange={(e) => setNewServiceName(e.target.value)}
-                                    placeholder="Enter service name..."
-                                    className="w-full px-4 py-3 pl-11 text-sm bg-white/50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    placeholder="Enter service name"
+                                    className="px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white/50 w-64"
                                     disabled={loading}
                                 />
-                                <Sparkles className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            </div>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                type="submit"
-                                disabled={loading || !newServiceName.trim()}
-                                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 text-sm font-medium transition-all"
-                            >
-                                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                                Add Service
-                            </motion.button>
-                        </form>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-lg"
-                    >
-                        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Services List</h2>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{services.length} services available</p>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="px-4 py-2 bg-white text-purple-600 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                                >
+                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                                    Create
+                                </button>
+                            </form>
                         </div>
-                        <div className="overflow-x-auto">
+                    </div>
+
+                    {/* Services Grid */}
+                    {viewMode === "grid" ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {services.filter(s => !query || s.service_name.toLowerCase().includes(query.toLowerCase())).map((service) => (
+                                <motion.div
+                                    key={service.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow"
+                                >
+                                    <div
+                                        className="h-2 w-full"
+                                        style={{
+                                            background: `linear-gradient(90deg, ${service.gradient_from || colorPalette.primary}, ${service.gradient_to || colorPalette.accent})`
+                                        }}
+                                    />
+                                    <div className="p-5">
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white text-lg">{service.service_name}</h3>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">/services/{service.slug}</p>
+                                            </div>
+                                            <button className="text-gray-400 hover:text-gray-600">
+                                                <MoreVertical className="w-5 h-5" />
+                                            </button>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <span className="px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                                                Active
+                                            </span>
+                                            {service.updated_at && (
+                                                <span className="text-xs text-gray-500">
+                                                    Updated {new Date(service.updated_at).toLocaleDateString()}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => loadServiceContent(service)}
+                                                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => window.open(`/services/${service.slug}`, "_blank")}
+                                                className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                                title="Preview"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    ) : (
+                        /* Table View */
+                        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
                             <table className="w-full">
-                                <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Service Name</th>
-                                        <th className="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Slug</th>
-                                        <th className="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-300">Actions</th>
+                                <thead>
+                                    <tr className="border-b border-gray-200 dark:border-gray-800">
+                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Service</th>
+                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
+                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</th>
+                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                    {services.map((service, index) => (
-                                        <motion.tr
-                                            key={service.id}
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors"
-                                        >
-                                            <td className="px-6 py-4">
+                                <tbody>
+                                    {services.filter(s => !query || s.service_name.toLowerCase().includes(query.toLowerCase())).map((service) => (
+                                        <tr key={service.id} className="border-b border-gray-200 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                            <td className="p-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
-                                                    {editingServiceId === service.id ? (
-                                                        <input
-                                                            value={editServiceName}
-                                                            onChange={(e) => setEditServiceName(e.target.value)}
-                                                            className="px-3 py-2 text-sm bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                                                            autoFocus
-                                                        />
-                                                    ) : (
-                                                        <span className="font-medium text-gray-900 dark:text-white">{service.service_name}</span>
-                                                    )}
+                                                    <div
+                                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                                        style={{
+                                                            background: `linear-gradient(135deg, ${service.gradient_from || colorPalette.primary}20, ${service.gradient_to || colorPalette.accent}20)`
+                                                        }}
+                                                    >
+                                                        <Layers className="w-5 h-5" style={{ color: service.primary_color || colorPalette.primary }} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-medium text-gray-900 dark:text-white">{service.service_name}</h4>
+                                                        <p className="text-sm text-gray-500 dark:text-gray-400">/services/{service.slug}</p>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <code className="text-xs bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 px-3 py-1.5 rounded-lg font-mono">
-                                                    /services/{service.slug}
-                                                </code>
+                                            <td className="p-4">
+                                                <span className="px-3 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                                                    Active
+                                                </span>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    {editingServiceId === service.id ? (
-                                                        <>
-                                                            <motion.button
-                                                                whileHover={{ scale: 1.1 }}
-                                                                whileTap={{ scale: 0.9 }}
-                                                                onClick={saveEdit}
-                                                                className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                                                            >
-                                                                <Check className="w-4 h-4" />
-                                                            </motion.button>
-                                                            <motion.button
-                                                                whileHover={{ scale: 1.1 }}
-                                                                whileTap={{ scale: 0.9 }}
-                                                                onClick={() => { setEditingServiceId(null); setEditServiceName("") }}
-                                                                className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                                                            >
-                                                                <X className="w-4 h-4" />
-                                                            </motion.button>
-                                                        </>
-                                                    ) : (
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.1 }}
-                                                            whileTap={{ scale: 0.9 }}
-                                                            onClick={() => startEdit(service)}
-                                                            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                                                        >
-                                                            <Edit2 className="w-4 h-4" />
-                                                        </motion.button>
-                                                    )}
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.1 }}
-                                                        whileTap={{ scale: 0.9 }}
-                                                        onClick={() => deleteService(service.id)}
-                                                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </motion.button>
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
+                                            <td className="p-4 text-gray-500 dark:text-gray-400 text-sm">
+                                                {service.updated_at ? new Date(service.updated_at).toLocaleDateString() : 'Never'}
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-2">
+                                                    <button
                                                         onClick={() => loadServiceContent(service)}
-                                                        className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all"
+                                                        className="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors flex items-center gap-2"
                                                     >
-                                                        <Settings className="w-4 h-4 inline mr-2" />
-                                                        Edit Content
-                                                    </motion.button>
+                                                        <Edit2 className="w-3 h-3" />
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => deleteService(service.id)}
+                                                        className="px-3 py-1.5 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                                    >
+                                                        Delete
+                                                    </button>
                                                 </div>
                                             </td>
-                                        </motion.tr>
+                                        </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
-                    </motion.div>
-                </motion.div>
+                    )}
+                </div>
             </div>
         )
     }
 
     // Content Editor View
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-900 p-4 md:p-6">
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="max-w-6xl mx-auto"
-            >
-                <div className="flex items-center justify-between mb-8">
-                    <motion.button
-                        whileHover={{ x: -5 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setSelectedService(null)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                        Back to List
-                    </motion.button>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={saveContent}
-                        disabled={saving}
-                        className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:shadow-lg disabled:opacity-50 flex items-center gap-2 text-sm font-medium transition-all"
-                    >
-                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                        Save All Changes
-                    </motion.button>
-                </div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8 p-6 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 dark:from-purple-500/5 dark:via-pink-500/5 dark:to-indigo-500/5 rounded-2xl border border-purple-200 dark:border-purple-800"
-                >
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                        Editing: <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{selectedService.service_name}</span>
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400">Customize your service page content and design</p>
-                </motion.div>
-
-                {/* Basic Settings */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-8 shadow-lg"
-                >
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg">
-                            <Palette className="w-5 h-5 text-white" />
-                        </div>
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Basic Settings</h2>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hero Title</label>
-                            <input
-                                value={selectedService.hero_title}
-                                onChange={(e) => setSelectedService(prev => ({ ...prev, hero_title: e.target.value }))}
-                                className="w-full px-4 py-3 text-sm bg-white/50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hero Subtitle</label>
-                            <input
-                                value={selectedService.hero_subtitle}
-                                onChange={(e) => setSelectedService(prev => ({ ...prev, hero_subtitle: e.target.value }))}
-                                className="w-full px-4 py-3 text-sm bg-white/50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Icon</label>
-                            <select
-                                value={selectedService.icon_name}
-                                onChange={(e) => setSelectedService(prev => ({ ...prev, icon_name: e.target.value }))}
-                                className="w-full px-4 py-3 text-sm bg-white/50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+            {/* Editor Header */}
+            <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                <div className="px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setSelectedService(null)}
+                                className="flex items-center gap-2 px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                             >
-                                {iconOptions.map(i => <option key={i} value={i}>{i}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Primary Color</label>
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="color"
-                                    value={selectedService.primary_color}
-                                    onChange={(e) => setSelectedService(prev => ({ ...prev, primary_color: e.target.value, gradient_from: e.target.value }))}
-                                    className="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
-                                />
-                                <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{selectedService.primary_color}</span>
+                                <ChevronLeft className="w-5 h-5" />
+                                <span>Back to Services</span>
+                            </button>
+                            <div className="h-6 w-px bg-gray-200 dark:bg-gray-800" />
+                            <div>
+                                <h1 className="text-xl font-bold text-gray-900 dark:text-white">{selectedService.service_name}</h1>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Editing service content</p>
                             </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gradient From</label>
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="color"
-                                    value={selectedService.gradient_from}
-                                    onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_from: e.target.value }))}
-                                    className="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
-                                />
-                                <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{selectedService.gradient_from}</span>
+
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => window.open(`/services/${selectedService.slug}`, "_blank")}
+                                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            >
+                                <Eye className="w-4 h-4" />
+                                Preview
+                            </button>
+                            <button
+                                onClick={() => navigator.clipboard?.writeText(`/services/${selectedService.slug}`)}
+                                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            >
+                                <Copy className="w-4 h-4" />
+                                Copy URL
+                            </button>
+                            <button
+                                onClick={saveContent}
+                                disabled={saving}
+                                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                            >
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="flex gap-1 mt-4">
+                        {["content"].map((tab) => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab
+                                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                                    }`}
+                            >
+                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Editor Content */}
+            <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left Panel - Basic Settings */}
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-4">Basic Information</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Name</label>
+                                    <input
+                                        type="text"
+                                        value={selectedService.service_name}
+                                        readOnly
+                                        className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hero Title</label>
+                                    <input
+                                        type="text"
+                                        value={selectedService.hero_title}
+                                        onChange={(e) => setSelectedService(prev => ({ ...prev, hero_title: e.target.value }))}
+                                        className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hero Subtitle</label>
+                                    <textarea
+                                        value={selectedService.hero_subtitle}
+                                        onChange={(e) => setSelectedService(prev => ({ ...prev, hero_subtitle: e.target.value }))}
+                                        rows={3}
+                                        className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                    />
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gradient To</label>
-                            <div className="flex items-center gap-3">
-                                <input
-                                    type="color"
-                                    value={selectedService.gradient_to}
-                                    onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_to: e.target.value }))}
-                                    className="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
-                                />
-                                <span className="text-sm font-mono text-gray-600 dark:text-gray-400">{selectedService.gradient_to}</span>
+
+                        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+                            <h3 className="font-bold text-gray-900 dark:text-white mb-4">Design Settings</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon</label>
+                                    <select
+                                        value={selectedService.icon_name}
+                                        onChange={(e) => setSelectedService(prev => ({ ...prev, icon_name: e.target.value }))}
+                                        className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                    >
+                                        {iconOptions.map(i => (
+                                            <option key={i} value={i}>{i}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Primary Color</label>
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            type="color"
+                                            value={selectedService.primary_color}
+                                            onChange={(e) => setSelectedService(prev => ({
+                                                ...prev,
+                                                primary_color: e.target.value,
+                                                gradient_from: e.target.value
+                                            }))}
+                                            className="w-12 h-12 rounded-lg cursor-pointer"
+                                        />
+                                        <div className="flex-1">
+                                            <input
+                                                type="text"
+                                                value={selectedService.primary_color}
+                                                onChange={(e) => setSelectedService(prev => ({
+                                                    ...prev,
+                                                    primary_color: e.target.value,
+                                                    gradient_from: e.target.value
+                                                }))}
+                                                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 font-mono text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gradient Colors</label>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="flex-1">
+                                            <div className="text-xs text-gray-500 mb-1">From</div>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="color"
+                                                    value={selectedService.gradient_from}
+                                                    onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_from: e.target.value }))}
+                                                    className="w-8 h-8 rounded cursor-pointer"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={selectedService.gradient_from}
+                                                    onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_from: e.target.value }))}
+                                                    className="flex-1 px-2 w-26 py-1 border border-gray-200 dark:border-gray-700 rounded text-sm font-mono"
+                                                />
+                                            </div>
+                                        </div>
+                                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                                        <div className="flex-1">
+                                            <div className="text-xs text-gray-500 mb-1">To</div>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="color"
+                                                    value={selectedService.gradient_to}
+                                                    onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_to: e.target.value }))}
+                                                    className="w-8 h-8 rounded cursor-pointer"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={selectedService.gradient_to}
+                                                    onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_to: e.target.value }))}
+                                                    className="flex-1 px-2 w-24 py-1 border border-gray-200 dark:border-gray-700 rounded text-sm font-mono"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        className="h-20 rounded-lg mt-2 border border-gray-200 dark:border-gray-700"
+                                        style={{
+                                            background: `linear-gradient(90deg, ${selectedService.gradient_from}, ${selectedService.gradient_to})`
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </motion.div>
 
-                {/* Sections */}
-                <div className="space-y-8">
-                    {selectedService.sections.map((section, sIdx) => (
-                        <motion.div
-                            key={section.id || sIdx}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg"
-                        >
-                            <div className="flex justify-between items-center mb-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
-                                        <Layers className="w-5 h-5 text-white" />
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
-                                        {section.title || section.section_type}
-                                    </h3>
-                                    <span className="px-3 py-1 text-xs font-medium bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 rounded-full">
-                                        {section.content.length} items
-                                    </span>
+                    {/* Right Panel - Sections */}
+                    <div className="lg:col-span-2">
+                        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 mb-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <h3 className="font-bold text-gray-900 dark:text-white text-lg">Content Sections</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage sections and their content</p>
                                 </div>
-                                <motion.button
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    onClick={() => deleteSection(sIdx)}
-                                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </motion.button>
+                                <div className="flex items-center gap-2">
+                                    {["features", "stats", "process", "benefits"].map((type) => (
+                                        <button
+                                            key={type}
+                                            onClick={() => addSection(type)}
+                                            className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                        >
+                                            Add {type}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
                             <div className="space-y-6">
-                                {section.content.map((item) => (
-                                    <motion.div
-                                        key={item.id}
-                                        layout
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        className="p-6 bg-gradient-to-r from-slate-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-600"
-                                    >
-                                        {/* Features Section */}
-                                        {section.section_type === "features" && (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Icon Name</label>
-                                                    <select
-                                                        value={item.icon_name || "CheckCircle"}
-                                                        onChange={(e) => updateItem(sIdx, iIdx, "icon_name", e.target.value)}
-                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                                    >
-                                                        {iconOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                                    </select>
+                                {selectedService.sections.map((section, sIdx) => (
+                                    <div key={section.id || sIdx} className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+                                        <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                                    <Layers className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Title</label>
-                                                    <input
-                                                        value={item.title || ""}
-                                                        onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)}
-                                                        placeholder="Feature title"
-                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Description</label>
-                                                    <input
-                                                        value={item.description || ""}
-                                                        onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)}
-                                                        placeholder="Short description"
-                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Highlight (optional)</label>
-                                                    <input
-                                                        value={item.highlight || ""}
-                                                        onChange={(e) => updateItem(sIdx, iIdx, "highlight", e.target.value)}
-                                                        placeholder="e.g. Most Popular"
-                                                        className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                                    />
+                                                    <h4 className="font-medium text-gray-900 dark:text-white">{section.title}</h4>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">{section.section_type} • {section.content?.length || 0} items</p>
                                                 </div>
                                             </div>
-                                        )}
-
-                                        {/* Stats / Benefits */}
-                                        {["stats", "benefits"].includes(section.section_type) && (
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Value</label>
-                                                    <input value={item.value || ""} onChange={(e) => updateItem(sIdx, iIdx, "value", e.target.value)} placeholder="99%" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Label</label>
-                                                    <input value={item.label || ""} onChange={(e) => updateItem(sIdx, iIdx, "label", e.target.value)} placeholder="Success Rate" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Trend (optional)</label>
-                                                    <input value={item.trend || ""} onChange={(e) => updateItem(sIdx, iIdx, "trend", e.target.value)} placeholder="+15%" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => addItem(sIdx)}
+                                                    className="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors"
+                                                >
+                                                    Add Item
+                                                </button>
+                                                <button
+                                                    onClick={() => deleteSection(sIdx)}
+                                                    className="px-3 py-1.5 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                                >
+                                                    Delete
+                                                </button>
                                             </div>
-                                        )}
-
-                                        {/* Process */}
-                                        {section.section_type === "process" && (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Step Number</label>
-                                                    <input value={item.step_number || ""} onChange={(e) => updateItem(sIdx, iIdx, "step_number", e.target.value)} placeholder="01" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Title</label>
-                                                    <input value={item.title || ""} onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)} placeholder="Step Title" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Description</label>
-                                                    <input value={item.description || ""} onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)} placeholder="Details" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Highlight</label>
-                                                    <input value={item.highlight || ""} onChange={(e) => updateItem(sIdx, iIdx, "highlight", e.target.value)} placeholder="Optional" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Industries / Technologies */}
-                                        {["industries", "technologies"].includes(section.section_type) && (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Icon Name</label>
-                                                    <select value={item.icon_name || "Globe"} onChange={(e) => updateItem(sIdx, iIdx, "icon_name", e.target.value)} className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500">
-                                                        {iconOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Title</label>
-                                                    <input value={item.title || ""} onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)} placeholder="Item Title" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Description</label>
-                                                    <input value={item.description || ""} onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)} placeholder="Description" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Highlight</label>
-                                                    <input value={item.highlight || ""} onChange={(e) => updateItem(sIdx, iIdx, "highlight", e.target.value)} placeholder="Optional" className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="mt-6 flex justify-end">
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => deleteItem(sIdx, iIdx)}
-                                                className="px-4 py-2 text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
-                                            >
-                                                Remove Item
-                                            </motion.button>
                                         </div>
-                                    </motion.div>
+
+                                        <div className="p-4 space-y-3">
+                                            {section.content.map((item, iIdx) => (
+                                                <div key={item.id} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900">
+                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                                                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{iIdx + 1}</span>
+                                                    </div>
+
+                                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
+                                                        {section.section_type === "features" && (
+                                                            <>
+                                                                <input
+                                                                    className="md:col-span-3 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.title || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)}
+                                                                    placeholder="Title"
+                                                                />
+                                                                <input
+                                                                    className="md:col-span-6 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.description || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)}
+                                                                    placeholder="Description"
+                                                                />
+                                                                <input
+                                                                    className="md:col-span-3 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.highlight || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "highlight", e.target.value)}
+                                                                    placeholder="Badge"
+                                                                />
+                                                            </>
+                                                        )}
+
+                                                        {["stats", "benefits"].includes(section.section_type) && (
+                                                            <>
+                                                                <input
+                                                                    className="md:col-span-4 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.value || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "value", e.target.value)}
+                                                                    placeholder="Value"
+                                                                />
+                                                                <input
+                                                                    className="md:col-span-5 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.label || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "label", e.target.value)}
+                                                                    placeholder="Label"
+                                                                />
+                                                                <input
+                                                                    className="md:col-span-3 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.trend || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "trend", e.target.value)}
+                                                                    placeholder="Trend"
+                                                                />
+                                                            </>
+                                                        )}
+
+                                                        {section.section_type === "process" && (
+                                                            <>
+                                                                <input
+                                                                    className="md:col-span-2 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.step_number || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "step_number", e.target.value)}
+                                                                    placeholder="Step"
+                                                                />
+                                                                <input
+                                                                    className="md:col-span-4 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.title || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)}
+                                                                    placeholder="Title"
+                                                                />
+                                                                <input
+                                                                    className="md:col-span-6 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm"
+                                                                    value={item.description || ""}
+                                                                    onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)}
+                                                                    placeholder="Description"
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => deleteItem(sIdx, iIdx)}
+                                                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
+                        </div>
 
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => addItem(sIdx)}
-                                className="mt-6 px-6 py-3 text-sm font-medium bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg flex items-center gap-2 transition-all"
+                        {/* Save Button */}
+                        <div className="sticky bottom-6">
+                            <button
+                                onClick={saveContent}
+                                disabled={saving}
+                                className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                             >
-                                <Plus className="w-4 h-4" />
-                                Add Item
-                            </motion.button>
-                        </motion.div>
-                    ))}
-
-                    {/* Add New Section */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-8 shadow-lg text-center"
-                    >
-                        <div className="flex items-center justify-center gap-3 mb-6">
-                            <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
-                                <Plus className="w-6 h-6 text-white" />
-                            </div>
-                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Add New Section</h3>
+                                {saving ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        Saving Changes...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-5 h-5" />
+                                        Save All Changes
+                                    </>
+                                )}
+                            </button>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
-                            {["features", "stats", "process", "industries", "technologies", "benefits"].map((type) => (
-                                <motion.button
-                                    key={type}
-                                    whileHover={{ scale: 1.05, y: -5 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => addSection(type)}
-                                    className="p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-sm font-medium capitalize transition-all hover:shadow-md"
-                                >
-                                    + {type}
-                                </motion.button>
-                            ))}
-                        </div>
-                    </motion.div>
+                    </div>
                 </div>
-            </motion.div>
+            </div>
         </div>
     )
 }

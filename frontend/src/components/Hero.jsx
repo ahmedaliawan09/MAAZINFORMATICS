@@ -30,6 +30,263 @@ function FloatingSphere() {
     )
 }
 
+const AnimatedNeonLine = () => {
+    const baseTransition = {
+        duration: 12,
+        ease: "easeInOut",
+        repeat: Infinity,
+    }
+
+    return (
+        <motion.svg
+            viewBox="0 0 1600 400"
+            className="absolute inset-0 w-full h-full z-0 pointer-events-none"
+            fill="none"
+            preserveAspectRatio="none"
+        >
+            <defs>
+                {/* GEMINI-INSPIRED NEON GRADIENT */}
+                <motion.linearGradient
+                    id="neonGradient"
+                    gradientUnits="userSpaceOnUse"
+                    x1="0"
+                    y1="0"
+                    x2="1600"
+                    y2="0"
+                    animate={{
+                        x1: [0, 800, 1600],
+                        x2: [1600, 2400, 3200]
+                    }}
+                    transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                >
+                    <stop offset="0%" stopColor="#FF6B00" />    {/* Vibrant Orange */}
+                    <stop offset="25%" stopColor="#00E676" />   {/* Emerald Green */}
+                    <stop offset="50%" stopColor="#FF3D00" />   {/* Bright Red-Orange */}
+                    <stop offset="75%" stopColor="#FFEA00" />   {/* Electric Yellow */}
+                    <stop offset="100%" stopColor="#FF6B00" />   {/* Back to Orange */}
+                </motion.linearGradient>
+
+                {/* SECOND GRADIENT FOR CONTINUOUS FLOW */}
+                <motion.linearGradient
+                    id="neonGradient2"
+                    gradientUnits="userSpaceOnUse"
+                    x1="-1600"
+                    y1="0"
+                    x2="0"
+                    y2="0"
+                    animate={{
+                        x1: [-1600, -800, 0],
+                        x2: [0, 800, 1600]
+                    }}
+                    transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: 4
+                    }}
+                >
+                    <stop offset="0%" stopColor="#FF6B00" />
+                    <stop offset="25%" stopColor="#00E676" />
+                    <stop offset="50%" stopColor="#FF3D00" />
+                    <stop offset="75%" stopColor="#FFEA00" />
+                    <stop offset="100%" stopColor="#FF6B00" />
+                </motion.linearGradient>
+
+                {/* ENHANCED GLOW */}
+                <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feColorMatrix
+                        in="blur"
+                        type="matrix"
+                        values="1 0 0 0 0
+                                0 1 0 0 0
+                                0 0 1 0 0
+                                0 0 0 15 -5"
+                    />
+                    <feBlend in="SourceGraphic" />
+                </filter>
+
+                {/* PULSE EFFECT */}
+                <filter id="pulseGlow">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feColorMatrix
+                        in="blur"
+                        type="matrix"
+                        values="1 0 0 0 0
+                                0 1 0 0 0
+                                0 0 1 0 0
+                                0 0 0 12 -4"
+                    />
+                    <feBlend in="SourceGraphic" />
+                </filter>
+            </defs>
+
+            {/* MAIN CONTINUOUS LINE 1 */}
+            <motion.path
+                d="
+                    M -300 120
+                    C 200 20, 500 260, 800 130
+                    C 1100 -20, 1400 240, 1900 120
+                    C 2200 40, 2500 280, 2900 120
+                "
+                stroke="url(#neonGradient)"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                filter="url(#softGlow)"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{
+                    pathLength: [0, 1],
+                    opacity: [0, 0.8, 0.8, 0],
+                    strokeWidth: [1.8, 2.2, 1.8],
+                }}
+                transition={{
+                    ...baseTransition,
+                    opacity: {
+                        times: [0, 0.1, 0.9, 1],
+                        duration: 12,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    },
+                    strokeWidth: {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        repeatType: "reverse"
+                    }
+                }}
+            />
+
+            {/* CONTINUOUS LINE 2 - SEAMLESS OVERLAP */}
+            <motion.path
+                d="
+                    M -300 200
+                    C 200 320, 500 40, 800 210
+                    C 1100 340, 1400 80, 1900 200
+                    C 2200 320, 2500 60, 2900 200
+                "
+                stroke="url(#neonGradient2)"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                filter="url(#pulseGlow)"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{
+                    pathLength: [0, 1],
+                    opacity: [0, 0.7, 0.7, 0],
+                    strokeWidth: [1.8, 2, 1.8],
+                }}
+                transition={{
+                    ...baseTransition,
+                    delay: 3,
+                    opacity: {
+                        times: [0, 0.1, 0.9, 1],
+                        duration: 12,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    },
+                    strokeWidth: {
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        repeatType: "reverse",
+                        delay: 1
+                    }
+                }}
+            />
+
+            {/* BACKGROUND FADE LINE FOR SMOOTHNESS */}
+            <motion.path
+                d="
+                    M -300 160
+                    C 200 180, 500 150, 800 170
+                    C 1100 160, 1400 160, 1900 160
+                    C 2200 180, 2500 150, 2900 160
+                "
+                stroke="url(#neonGradient)"
+                strokeWidth="0.5"
+                strokeLinecap="round"
+                strokeOpacity="0.3"
+                initial={{ pathLength: 0 }}
+                animate={{
+                    pathLength: [0, 1],
+                }}
+                transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: 1.5
+                }}
+            />
+
+            {/* PULSING DOTS FOR CONTINUITY */}
+            <motion.circle
+                cx="0"
+                cy="120"
+                r="1.5"
+                fill="#FF6B00"
+                filter="url(#softGlow)"
+                animate={{
+                    cx: [-300, 2900],
+                    opacity: [0, 1, 1, 0],
+                    scale: [1, 1.5, 1],
+                }}
+                transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "linear",
+                    opacity: {
+                        times: [0, 0.1, 0.9, 1],
+                        duration: 12,
+                        repeat: Infinity,
+                    },
+                    scale: {
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        repeatType: "reverse"
+                    }
+                }}
+            />
+
+            <motion.circle
+                cx="0"
+                cy="200"
+                r="1.5"
+                fill="#00E676"
+                filter="url(#softGlow)"
+                animate={{
+                    cx: [-300, 2900],
+                    opacity: [0, 1, 1, 0],
+                    scale: [1, 1.5, 1],
+                }}
+                transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: 6,
+                    opacity: {
+                        times: [0, 0.1, 0.9, 1],
+                        duration: 12,
+                        repeat: Infinity,
+                    },
+                    scale: {
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        repeatType: "reverse",
+                        delay: 1
+                    }
+                }}
+            />
+        </motion.svg>
+    )
+}
+
+
+
 const Hero = () => {
     const [currentImage, setCurrentImage] = useState(0)
     const images = [carousel1, carousel2, carousel3]
@@ -68,6 +325,8 @@ const Hero = () => {
             ref={containerRef}
             className="relative pt-16 pb-12 overflow-hidden bg-linear-to-b from-gray-50 to-white"
         >
+            <AnimatedNeonLine />
+
             {/* Minimal 3D Background */}
             <div className="absolute top-10 right-10 w-40 h-40 opacity-10">
                 <Canvas>
