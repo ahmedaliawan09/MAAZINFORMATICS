@@ -335,7 +335,7 @@ export default function ServicesSection() {
                     </div>
 
                     {/* Add Service Card */}
-                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 mb-6">
+                    <div className="bg-linear-to-r from-purple-500 to-indigo-600 rounded-xl p-6 mb-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-bold text-white">Create New Service</h3>
@@ -739,7 +739,7 @@ export default function ServicesSection() {
                                         <div className="p-4 space-y-3">
                                             {section.content.map((item, iIdx) => (
                                                 <div key={item.id} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900">
-                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                                                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{iIdx + 1}</span>
                                                     </div>
 
@@ -816,7 +816,7 @@ export default function ServicesSection() {
 
                                                     <button
                                                         onClick={() => deleteItem(sIdx, iIdx)}
-                                                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
+                                                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors shrink-0"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </button>
@@ -833,7 +833,7 @@ export default function ServicesSection() {
                             <button
                                 onClick={saveContent}
                                 disabled={saving}
-                                className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                                className="w-full py-4 bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                             >
                                 {saving ? (
                                     <>
