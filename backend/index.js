@@ -1,5 +1,7 @@
 import app from "./app.js"
-import db from "./config/db.js"
+import "./config/cloudinaryConfig.js"
+
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

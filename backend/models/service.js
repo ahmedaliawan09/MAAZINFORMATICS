@@ -11,59 +11,48 @@ export const getAllServices = async () => {
 
 // Get full service by slug (for dynamic page)
 export const getServiceBySlug = async (slug) => {
-    const [services] = await db
-        .promise()
-        .execute(
-            "SELECT * FROM services WHERE slug = ? AND is_active = 1",
-            [slug]
-        );
-
+    const [services] = await db.promise().execute(
+        "SELECT * FROM services WHERE slug = ? AND is_active = 1",
+        [slug]
+    );
     if (services.length === 0) return null;
 
     const service = services[0];
 
-    // Fetch sections
-    const [sections] = await db
-        .promise()
-        .execute(
-            "SELECT * FROM service_sections WHERE service_id = ? ORDER BY sort_order ASC",
-            [service.id]
-        );
+    const [sections] = await db.promise().execute(
+        "SELECT * FROM service_sections WHERE service_id = ? ORDER BY sort_order ASC",
+        [service.id]
+    );
 
-    // Populate each section with its content
     for (let section of sections) {
         let content = [];
 
         if (section.section_type === "features") {
-            [content] = await db
-                .promise()
-                .execute(
-                    "SELECT id, icon_name, title, description, highlight, sort_order FROM service_features WHERE section_id = ? ORDER BY sort_order",
-                    [section.id]
-                );
+            [content] = await db.promise().execute(
+                "SELECT * FROM service_features WHERE section_id = ? ORDER BY sort_order",
+                [section.id]
+            );
         } else if (["stats", "benefits"].includes(section.section_type)) {
-            [content] = await db
-                .promise()
-                .execute(
-                    "SELECT id, value, label, trend, sort_order FROM service_stats WHERE section_id = ? ORDER BY sort_order",
-                    [section.id]
-                );
+            [content] = await db.promise().execute(
+                "SELECT *, icon_name FROM service_stats WHERE section_id = ? ORDER BY sort_order",
+                [section.id]
+            );
         } else if (section.section_type === "process") {
-            [content] = await db
-                .promise()
-                .execute(
-                    "SELECT id, step_number, title, description, stats AS highlight, sort_order FROM service_process_steps WHERE section_id = ? ORDER BY sort_order",
-                    [section.id]
-                );
+            [content] = await db.promise().execute(
+                "SELECT * FROM service_process_steps WHERE section_id = ? ORDER BY sort_order",
+                [section.id]
+            );
         } else if (["industries", "technologies"].includes(section.section_type)) {
-            [content] = await db
-                .promise()
-                .execute(
-                    "SELECT id, icon_name, title, description, stats AS highlight, color_from, color_to, sort_order FROM service_grid_items WHERE section_id = ? ORDER BY sort_order",
-                    [section.id]
-                );
+            [content] = await db.promise().execute(
+                "SELECT *, link FROM service_grid_items WHERE section_id = ? ORDER BY sort_order",
+                [section.id]
+            );
+        } else if (section.section_type === "faq") {
+            [content] = await db.promise().execute(
+                "SELECT id, question, answer, sort_order FROM service_faqs WHERE section_id = ? ORDER BY sort_order",
+                [section.id]
+            );
         }
-        // Add more section types later (faq, cta, etc.)
 
         section.content = content;
     }
@@ -144,34 +133,36 @@ export const getServiceForEdit = async (serviceId) => {
 };
 
 // Update basic service info (slug, colors, titles, etc.)
-export const updateServiceBasic = async (id, data) => {
-    const fields = [];
-    const values = [];
+export const updateServiceBasic = async (id, data, connection = db.promise()) => {
+    const fields = [], values = [];
 
     if (data.service_name) {
-        fields.push("service_name = ?");
-        values.push(data.service_name);
+        fields.push("service_name = ?"); values.push(data.service_name.trim());
         const slug = data.service_name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-        fields.push("slug = ?");
-        values.push(slug);
+        fields.push("slug = ?"); values.push(slug);
     }
-    if (data.short_description !== undefined) { fields.push("short_description = ?"); values.push(data.short_description); }
     if (data.hero_title !== undefined) { fields.push("hero_title = ?"); values.push(data.hero_title); }
     if (data.hero_subtitle !== undefined) { fields.push("hero_subtitle = ?"); values.push(data.hero_subtitle); }
+    if (data.hero_image !== undefined) { fields.push("hero_image = ?"); values.push(data.hero_image); }
+    if (data.hero_background_image !== undefined) { fields.push("hero_background_image = ?"); values.push(data.hero_background_image); }
+    if (data.hero_cta_text !== undefined) { fields.push("hero_cta_text = ?"); values.push(data.hero_cta_text); }
+    if (data.hero_cta_link !== undefined) { fields.push("hero_cta_link = ?"); values.push(data.hero_cta_link); }
     if (data.icon_name !== undefined) { fields.push("icon_name = ?"); values.push(data.icon_name); }
     if (data.primary_color !== undefined) { fields.push("primary_color = ?"); values.push(data.primary_color); }
     if (data.gradient_from !== undefined) { fields.push("gradient_from = ?"); values.push(data.gradient_from); }
     if (data.gradient_to !== undefined) { fields.push("gradient_to = ?"); values.push(data.gradient_to); }
 
     if (fields.length === 0) return;
-
     values.push(id);
-    await db.promise().execute(
-        `UPDATE services SET ${fields.join(", ")} WHERE id = ?`,
-        values
+
+    await connection.execute(`UPDATE services SET ${fields.join(", ")} WHERE id = ?`, values);
+};
+export const addFaqItem = async (sectionId, data, connection = db.promise()) => {
+    await connection.execute(
+        "INSERT INTO service_faqs (section_id, question, answer, sort_order) VALUES (?, ?, ?, ?)",
+        [sectionId, data.question, data.answer, data.sort_order || 0]
     );
 };
-
 // Add / Update / Delete sections and content (you'll call these from controller)
 export const createSection = async (serviceId, type, title = "", subtitle = "") => {
     const [result] = await db.promise().execute(
@@ -186,31 +177,34 @@ export const deleteSection = async (sectionId) => {
 };
 
 // Generic content add (features, stats, etc.)
-export const addFeature = async (sectionId, data) => {
-    await db.promise().execute(
-        "INSERT INTO service_features (section_id, icon_name, title, description, highlight) VALUES (?, ?, ?, ?, ?)",
-        [sectionId, data.icon_name, data.title, data.description, data.highlight || null]
+export const addFeature = async (sectionId, data, connection = db.promise()) => {
+    await connection.execute(
+        "INSERT INTO service_features (section_id, icon_name, title, description, highlight, image, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [sectionId, data.icon_name || "CheckCircle", data.title, data.description || null,
+            data.highlight || null, data.image || null, data.sort_order || 0]
     );
 };
 
-export const addStat = async (sectionId, data) => {
-    await db.promise().execute(
-        "INSERT INTO service_stats (section_id, value, label, trend) VALUES (?, ?, ?, ?)",
-        [sectionId, data.value, data.label, data.trend || null]
+export const addStat = async (sectionId, data, connection = db.promise()) => {
+    await connection.execute(
+        "INSERT INTO service_stats (section_id, value, label, trend, icon_name, sort_order) VALUES (?, ?, ?, ?, ?, ?)",
+        [sectionId, data.value, data.label, data.trend || null, data.icon_name || null, data.sort_order || 0]
     );
 };
 
-export const addProcessStep = async (sectionId, data) => {
-    await db.promise().execute(
-        "INSERT INTO service_process_steps (section_id, step_number, title, description, stats) VALUES (?, ?, ?, ?, ?)",
-        [sectionId, data.step_number, data.title, data.description, data.stats || null]
+export const addProcessStep = async (sectionId, data, connection = db.promise()) => {
+    await connection.execute(
+        "INSERT INTO service_process_steps (section_id, step_number, title, description, stats, icon_name, image, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [sectionId, data.step_number, data.title, data.description || null, data.stats || null,
+            data.icon_name || null, data.image || null, data.sort_order || 0]
     );
 };
 
-export const addGridItem = async (sectionId, data) => {
-    await db.promise().execute(
-        "INSERT INTO service_grid_items (section_id, icon_name, title, description, stats, color_from, color_to) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [sectionId, data.icon_name, data.title, data.description, data.stats || null, data.color_from || null, data.color_to || null]
+export const addGridItem = async (sectionId, data, connection = db.promise()) => {
+    await connection.execute(
+        "INSERT INTO service_grid_items (section_id, icon_name, title, description, stats, color_from, color_to, link, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [sectionId, data.icon_name || null, data.title, data.description || null, data.stats || null,
+            data.color_from || null, data.color_to || null, data.link || null, data.sort_order || 0]
     );
 };
 

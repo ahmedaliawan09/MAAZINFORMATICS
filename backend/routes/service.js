@@ -1,17 +1,22 @@
 // routes/service.js
 import { addService, getServices, getDynamicService, getServiceContent, saveServiceContent } from "../controllers/servicecontroller.js";
+import upload from "../config/multerConfig.js";
 import express from "express"
 import db from "../config/db.js";  // ← ADD THIS
 
 const router = express.Router();
 
-router.post("/addservices", addService);
+
 router.get("/getservices", getServices);
 router.get("/service/:slug", getDynamicService);
 
-// Add these routes
+router.post("/addservices", addService);
 router.get("/content/:id", getServiceContent);           // GET service full content for editing
-router.put("/content/:id", saveServiceContent);         // Save all content
+router.put(
+    "/content/:id",
+    upload.any(),  // ← CHANGE FROM .fields([]) TO .any()
+    saveServiceContent
+);    // Save all content
 // UPDATE
 router.put("/updateservice/:id", async (req, res) => {
     try {
