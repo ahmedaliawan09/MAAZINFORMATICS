@@ -1,23 +1,23 @@
-// routes/service.js
+
 import { addService, getServices, getDynamicService, getServiceContent, saveServiceContent } from "../controllers/servicecontroller.js";
-import upload from "../config/multerConfig.js";
+import { handleCloudinaryUpload } from "../config/multerConfig.js"; // Updated import
 import express from "express"
-import db from "../config/db.js";  // ← ADD THIS
+import db from "../config/db.js";
 
 const router = express.Router();
 
-
 router.get("/getservices", getServices);
 router.get("/service/:slug", getDynamicService);
-
 router.post("/addservices", addService);
-router.get("/content/:id", getServiceContent);           // GET service full content for editing
+router.get("/content/:id", getServiceContent);
+
+// Use the new middleware for file uploads
 router.put(
     "/content/:id",
-    upload.any(),  // ← CHANGE FROM .fields([]) TO .any()
+    handleCloudinaryUpload,  // Use the new middleware
     saveServiceContent
-);    // Save all content
-// UPDATE
+);
+
 router.put("/updateservice/:id", async (req, res) => {
     try {
         const { id } = req.params;
@@ -42,7 +42,6 @@ router.put("/updateservice/:id", async (req, res) => {
     }
 });
 
-// DELETE
 router.delete("/deleteservice/:id", async (req, res) => {
     try {
         const { id } = req.params;

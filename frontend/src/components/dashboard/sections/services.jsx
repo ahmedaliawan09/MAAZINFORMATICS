@@ -193,6 +193,34 @@ export default function ServicesSection() {
             }))
             formData.append("sections", JSON.stringify(sectionsData))
 
+            // DEBUG: Log files before appending
+            console.log("=== DEBUG: Files to upload ===");
+            console.log("1. Hero image file:", selectedService.heroImageFile ? selectedService.heroImageFile.name : "None");
+            console.log("2. Hero background file:", selectedService.heroBgFile ? selectedService.heroBgFile.name : "None");
+
+            // Section background files
+            selectedService.sections.forEach((sec, idx) => {
+                if (sec.bgFile) {
+                    console.log(`3. Section ${idx} (${sec.section_type}) BG file:`, sec.bgFile.name);
+                }
+            });
+
+            // Item image files
+            selectedService.sections.forEach((sec, secIdx) => {
+                sec.content?.forEach((item, itemIdx) => {
+                    if (item.imageFile) {
+                        console.log(`4. Section ${secIdx}, Item ${itemIdx} image file:`, item.imageFile.name);
+                    }
+                });
+            });
+
+            // Media files
+            mediaFiles.forEach((file, idx) => {
+                if (file.file) {
+                    console.log(`5. Media file ${idx}:`, file.file.name);
+                }
+            });
+
             // Append ALL files
             if (selectedService.heroImageFile) {
                 formData.append("hero_image", selectedService.heroImageFile)
@@ -229,10 +257,26 @@ export default function ServicesSection() {
                 }
             })
 
-            await axios.put(`http://localhost:5000/api/service/content/${selectedService.id}`, formData, {
+            // DEBUG: Check FormData content before sending
+            console.log("=== DEBUG: FormData entries ===");
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`FormData [File]: ${key} = ${value.name} (${value.type}, ${value.size} bytes)`);
+                } else if (typeof value === 'string' && value.length > 100) {
+                    console.log(`FormData [JSON]: ${key} = ${value.substring(0, 100)}...`);
+                } else {
+                    console.log(`FormData [Text]: ${key} = ${value}`);
+                }
+            }
+
+            // Send request
+            console.log("=== Sending request to backend ===");
+            const response = await axios.put(`http://localhost:5000/api/service/content/${selectedService.id}`, formData, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
+
+            console.log("=== Response from backend ===", response.data);
 
             // Success toast
             const successEl = document.createElement('div')
@@ -241,11 +285,16 @@ export default function ServicesSection() {
             document.body.appendChild(successEl)
             setTimeout(() => successEl.remove(), 3000)
 
+            // Reload content
             loadServiceContent(selectedService)
             setMediaFiles([])
         } catch (err) {
+            console.error("=== ERROR Details ===");
+            console.error("Error message:", err.message);
+            console.error("Error response:", err.response?.data);
+            console.error("Error stack:", err.stack);
+
             setErrorMsg(err.response?.data?.message || "Save failed")
-            console.error(err)
         } finally {
             setSaving(false)
         }
@@ -375,12 +424,80 @@ export default function ServicesSection() {
             return { ...prev, sections }
         })
     }
+    const compressImage = async (file, maxWidth = 1200, quality = 0.8) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
 
-    const handleImageUpload = (field, file, sectionIndex = null, itemIndex = null) => {
+                    // Resize if too large
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(
+                        (blob) => {
+                            if (!blob) {
+                                reject(new Error('Canvas is empty'));
+                                return;
+                            }
+                            // Convert blob back to file
+                            const compressedFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now(),
+                            });
+                            resolve(compressedFile);
+                        },
+                        'image/jpeg',
+                        quality
+                    );
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
+    };
+
+    const handleImageUpload = async (field, file, sectionIndex = null, itemIndex = null) => {
         if (!file) return
 
+        console.log(`Uploading ${field}:`, file.name);
+        try {
+            // Compress image if > 1MB
+            let processedFile = file;
+            if (file.size > 1024 * 1024) { // 1MB
+                console.log("Compressing image...");
+                processedFile = await compressImage(file, 1200, 0.7);
+                console.log(`Compressed from ${file.size} to ${processedFile.size} bytes`);
+            }
+
+            // ... rest of your existing code
+        } catch (error) {
+            console.error("Image compression failed:", error);
+            // Fallback to original file
+            processedFile = file;
+        }
+
+
         if (field === "hero_image") {
-            setSelectedService(prev => ({ ...prev, heroImageFile: file, hero_image: URL.createObjectURL(file) }))
+            setSelectedService(prev => ({
+                ...prev,
+                heroImageFile: processedFile,
+                hero_image: URL.createObjectURL(processedFile)
+            }))
         } else if (field === "hero_background_image") {
             setSelectedService(prev => ({ ...prev, heroBgFile: file, hero_background_image: URL.createObjectURL(file) }))
         } else if (field === "section_bg") {

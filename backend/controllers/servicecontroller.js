@@ -89,14 +89,12 @@ export const getServiceContent = async (req, res) => {
     }
 };
 
-// controllers/servicecontroller.js
-// controllers/servicecontroller.js - BULLETPROOF VERSION
+
 export const saveServiceContent = async (req, res) => {
     let connection = null;
     try {
-        // Get dedicated connection
         connection = await db.promise().getConnection();
-        await connection.beginTransaction(); // SINGLE TRANSACTION ONLY
+        await connection.beginTransaction();
 
         const { id } = req.params;
         let { basic, sections } = req.body;
@@ -107,42 +105,62 @@ export const saveServiceContent = async (req, res) => {
         basic = basic || {};
         sections = Array.isArray(sections) ? sections : [];
 
-        console.log(`🚀 Saving service ${id}: ${sections.length} sections`);
+        console.log("📁 Uploaded files:", req.files ? req.files.length : 0);
+        if (req.files) {
+            req.files.forEach(file => {
+                console.log(`📄 File: ${file.fieldname} -> ${file.path} (ID: ${file.filename})`);
+            });
+        }
 
-        // === 1. SIMPLE & FAST DELETE (no JOINs, no locks) ===
+        // === 1. DELETE OLD CONTENT ===
         const contentTables = ['service_faqs', 'service_features', 'service_stats', 'service_process_steps', 'service_grid_items'];
         for (const table of contentTables) {
             await connection.execute(`DELETE FROM ${table} WHERE section_id IN (SELECT id FROM service_sections WHERE service_id = ?)`, [id]);
         }
-        console.log('✅ Deleted all section content');
-
-        // Then delete sections
         await connection.execute('DELETE FROM service_sections WHERE service_id = ?', [id]);
-        console.log('✅ Deleted all sections');
 
-        // === 2. Update basic info ===
+        // === 2. UPDATE BASIC INFO WITH IMAGES ===
         if (Object.keys(basic).length > 0) {
+            // Handle hero images if uploaded
+            if (req.files) {
+                const heroImageFile = req.files.find(f => f.fieldname === 'hero_image');
+                const heroBgFile = req.files.find(f => f.fieldname === 'hero_background_image');
+
+                if (heroImageFile) {
+                    basic.hero_image = heroImageFile.filename; // Cloudinary public_id
+                    console.log('✅ Hero image saved:', basic.hero_image);
+                }
+                if (heroBgFile) {
+                    basic.hero_background_image = heroBgFile.filename; // Cloudinary public_id
+                    console.log('✅ Hero background saved:', basic.hero_background_image);
+                }
+            }
+
             await updateServiceBasic(id, basic, connection);
             console.log('✅ Updated basic info');
         }
 
-        // === 3. Insert new sections ===
+        // === 3. INSERT SECTIONS ===
         for (let i = 0; i < sections.length; i++) {
             const sec = sections[i];
 
-            // Upload section background image (with safe check)
+            // Handle section background image
             let background_image = sec.background_image || null;
-            const bgField = `section_bg_${sec.tempId}`;
-            if (req.files && req.files[bgField] && req.files[bgField].length > 0) {
-                background_image = req.files[bgField][0].public_id || req.files[bgField][0].filename;
+            if (sec.tempId) {
+                const bgField = `section_bg_${sec.tempId}`;
+                const bgFile = req.files?.find(f => f.fieldname === bgField);
+                if (bgFile) {
+                    background_image = bgFile.filename; // Cloudinary public_id
+                    console.log(`✅ Section ${i} background:`, background_image);
+                }
             }
 
             // Insert section
             const [secResult] = await connection.execute(
                 `INSERT INTO service_sections 
-        (service_id, section_type, title, subtitle, background_image, layout_style, 
-         cta_text, cta_link, secondary_cta_text, secondary_cta_link, sort_order)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                (service_id, section_type, title, subtitle, background_image, layout_style, 
+                 cta_text, cta_link, secondary_cta_text, secondary_cta_link, sort_order)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     id, sec.section_type, sec.title || "", sec.subtitle || "",
                     background_image, sec.layout_style || "default",
@@ -152,74 +170,97 @@ export const saveServiceContent = async (req, res) => {
                 ]
             );
             const sectionId = secResult.insertId;
-            console.log(`Created section ${sec.section_type} (ID: ${sectionId})`);
 
-            // === 4. Insert section content ===
-            if (!sec.content || !Array.isArray(sec.content)) continue;
+            // === 4. INSERT SECTION CONTENT WITH IMAGES ===
+            if (sec.content && Array.isArray(sec.content)) {
+                for (const item of sec.content) {
+                    let itemImage = item.image || null;
 
-            for (const item of sec.content) {
-                // Upload item image (with safe check)
-                let itemImage = item.image || null;
-                const itemField = `item_image_${item.tempId}`;
-                if (req.files && req.files[itemField] && req.files[itemField].length > 0) {
-                    itemImage = req.files[itemField][0].public_id || req.files[itemField][0].filename;
-                }
-
-                try {
-                    if (sec.section_type === "features") {
-                        await addFeature(sectionId, { ...item, image: itemImage }, connection);
-                    } else if (["stats", "benefits"].includes(sec.section_type)) {
-                        await addStat(sectionId, item, connection);
-                    } else if (sec.section_type === "process") {
-                        await addProcessStep(sectionId, { ...item, image: itemImage }, connection);
-                    } else if (["industries", "technologies"].includes(sec.section_type)) {
-                        await addGridItem(sectionId, item, connection);
-                    } else if (sec.section_type === "faq") {
-                        await addFaqItem(sectionId, item, connection);
+                    // Handle item image if uploaded
+                    if (item.tempId) {
+                        const itemField = `item_image_${item.tempId}`;
+                        const itemFile = req.files?.find(f => f.fieldname === itemField);
+                        if (itemFile) {
+                            itemImage = itemFile.filename; // Cloudinary public_id
+                            console.log(`✅ Item image for ${sec.section_type}:`, itemImage);
+                        }
                     }
-                    console.log(`Added ${sec.section_type} item`);
-                } catch (itemErr) {
-                    console.error(`Item error (${sec.section_type}):`, itemErr.message);
+
+                    try {
+                        if (sec.section_type === "features") {
+                            await addFeature(sectionId, { ...item, image: itemImage }, connection);
+                        } else if (["stats", "benefits"].includes(sec.section_type)) {
+                            await addStat(sectionId, item, connection);
+                        } else if (sec.section_type === "process") {
+                            await addProcessStep(sectionId, { ...item, image: itemImage }, connection);
+                        } else if (["industries", "technologies"].includes(sec.section_type)) {
+                            await addGridItem(sectionId, item, connection);
+                        } else if (sec.section_type === "faq") {
+                            await addFaqItem(sectionId, item, connection);
+                        }
+                    } catch (itemErr) {
+                        console.error(`Item error:`, itemErr.message);
+                    }
                 }
             }
         }
 
-        // Hero images (update after sections to avoid lock conflicts)
-        if (req.files && req.files.hero_image && req.files.hero_image.length > 0) {
-            const heroImg = req.files.hero_image[0].public_id || req.files.hero_image[0].filename;
-            await connection.execute('UPDATE services SET hero_image = ? WHERE id = ?', [heroImg, id]);
-            console.log('Saved hero image:', heroImg);
-        }
+        // === 5. SAVE SERVICE MEDIA FILES ===
+        if (req.files) {
+            // Find all media files (uploaded via media tab)
+            const mediaFiles = req.files.filter(f => f.fieldname.startsWith('media_'));
 
-        if (req.files && req.files.hero_background_image && req.files.hero_background_image.length > 0) {
-            const heroBg = req.files.hero_background_image[0].public_id || req.files.hero_background_image[0].filename;
-            await connection.execute('UPDATE services SET hero_background_image = ? WHERE id = ?', [heroBg, id]);
-            console.log('Saved hero background:', heroBg);
+            for (const mediaFile of mediaFiles) {
+                // Extract media index from fieldname
+                const match = mediaFile.fieldname.match(/media_(\d+)/);
+                if (match) {
+                    const index = match[1];
+                    const mediaDataField = `media_data_${index}`;
+
+                    if (req.body[mediaDataField]) {
+                        const mediaData = JSON.parse(req.body[mediaDataField]);
+
+                        await connection.execute(
+                            `INSERT INTO service_media 
+                            (service_id, public_id, url, media_type, alt_text, caption)
+                            VALUES (?, ?, ?, ?, ?, ?)`,
+                            [
+                                id,
+                                mediaFile.filename, // Cloudinary public_id
+                                mediaFile.path, // Cloudinary URL
+                                mediaData.media_type || 'image',
+                                mediaData.alt_text || '',
+                                mediaData.caption || ''
+                            ]
+                        );
+                        console.log('✅ Saved media file:', mediaFile.filename);
+                    }
+                }
+            }
         }
 
         await connection.commit();
-        console.log('🎉 ALL SAVED SUCCESSFULLY');
-        res.json({ message: "Service content saved successfully" });
+        console.log('🎉 All content saved successfully');
+        res.json({
+            message: "Service content saved successfully",
+            uploadedFiles: req.files ? req.files.length : 0
+        });
 
     } catch (err) {
         if (connection) {
             try {
                 await connection.rollback();
-                console.log('🔄 Rolled back transaction');
             } catch (rollbackErr) {
                 console.error('Rollback failed:', rollbackErr);
             }
         }
 
-        console.error("💥 Save service content FAILED:", err);
-
-        if (err.code === 'ER_LOCK_WAIT_TIMEOUT') {
-            return res.status(429).json({
-                message: "Database is busy. Please wait 10 seconds and try again.",
-                tip: "Close all tabs editing this service. Only one save at a time."
-            });
-        }
-        res.status(500).json({ message: "Save failed", error: err.message });
+        console.error("💥 Save failed:", err);
+        res.status(500).json({
+            message: "Save failed",
+            error: err.message,
+            details: err.stack
+        });
     } finally {
         if (connection) connection.release();
     }
