@@ -202,7 +202,7 @@ export default function DynamicServicePage({ darkMode = false }) {
                                                 <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold mb-2" style={{ background: `linear-gradient(135deg, ${from}, ${to})`, color: "#fff", boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}>
                                                     {step.step_number || (i + 1).toString().padStart(2, '0')}
                                                 </div>
-                                                <div className="w-px h-16 bg-gradient-to-b from-transparent via-slate-300 to-transparent" />
+                                                <div className="w-px h-16 bg-linear-to-b from-transparent via-slate-300 to-transparent" />
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-2">
@@ -239,7 +239,7 @@ export default function DynamicServicePage({ darkMode = false }) {
                                                     {step.step_number || (i + 1).toString().padStart(2, '0')}
                                                 </div>
                                                 {i < sectionContent.length - 1 && (
-                                                    <div className="w-px h-full bg-gradient-to-b from-transparent via-slate-300 to-transparent mt-4" />
+                                                    <div className="w-px h-full bg-linear-to-b from-transparent via-slate-300 to-transparent mt-4" />
                                                 )}
                                             </div>
                                             <div className={`flex-1 p-6 rounded-xl border ${darkMode ? "bg-slate-900/30 border-slate-700" : "bg-white border-slate-100"}`}>
@@ -302,7 +302,7 @@ export default function DynamicServicePage({ darkMode = false }) {
                                         target={item.link ? "_blank" : undefined}
                                         rel={item.link ? "noopener noreferrer" : undefined}
                                         whileHover={{ y: -4, scale: 1.02 }}
-                                        className={`block ${isHorizontalScroll ? "flex-shrink-0 w-48" : ""} rounded-xl border p-4 ${darkMode ? "bg-slate-900/30 border-slate-700 hover:border-slate-600" : "bg-white border-slate-100 hover:border-slate-200"} transition-all group`}
+                                        className={`block ${isHorizontalScroll ? "shrink-0 w-48" : ""} rounded-xl border p-4 ${darkMode ? "bg-slate-900/30 border-slate-700 hover:border-slate-600" : "bg-white border-slate-100 hover:border-slate-200"} transition-all group`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div
@@ -468,7 +468,7 @@ export default function DynamicServicePage({ darkMode = false }) {
     return (
         <>
             <Navbar />
-            <div className={`min-h-screen pt-20 ${darkMode ? "bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-slate-900 to-slate-950" : "bg-gradient-to-b from-white to-slate-50"}`}>
+            <div className={`min-h-screen pt-20 ${darkMode ? "bg-[radial-gradient(ellipse_at_top_left,var(--tw-gradient-stops))] from-slate-900 to-slate-950" : "bg-linear-to-b from-white to-slate-50"}`}>
                 {/* Hero Section */}
                 <div className="relative overflow-hidden">
                     {service.hero_background_image && (
@@ -599,7 +599,7 @@ export default function DynamicServicePage({ darkMode = false }) {
                         viewport={{ once: true }}
                         className="mt-20 mb-28"
                     >
-                        <div className={`rounded-3xl p-8 md:p-12 ${darkMode ? "bg-gradient-to-r from-slate-900/60 to-slate-800/30 border border-slate-700" : "bg-gradient-to-r from-white/80 to-slate-50/80 border border-slate-100"} shadow-2xl backdrop-blur-sm`}>
+                        <div className={`rounded-3xl p-8 md:p-12 ${darkMode ? "bg-linear-to-r from-slate-900/60 to-slate-800/30 border border-slate-700" : "bg-linear-to-r from-white/80 to-slate-50/80 border border-slate-100"} shadow-2xl backdrop-blur-sm`}>
                             <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
                                 <div className="lg:w-2/3">
                                     <h3 className={`text-2xl md:text-3xl font-bold mb-4 ${darkMode ? "text-white" : "text-slate-900"}`}>

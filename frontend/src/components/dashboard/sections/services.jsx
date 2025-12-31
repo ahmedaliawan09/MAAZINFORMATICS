@@ -44,6 +44,7 @@ const colorPalette = {
     gray: "#64748B"
 }
 
+
 export default function ServicesSection() {
     const [services, setServices] = useState([])
     const [selectedService, setSelectedService] = useState(null)
@@ -124,11 +125,18 @@ export default function ServicesSection() {
 
     const loadServiceContent = async (service) => {
         try {
-            setLoading(true)
-            const res = await axios.get(`http://localhost:5000/api/service/content/${service.id}`)
+            setLoading(true);
+            const res = await axios.get(`http://localhost:5000/api/service/content/${service.id}`);
+
+            // Ensure sections have proper structure
+            const sections = (res.data.service.sections || []).map(section => ({
+                ...section,
+                content: section.content || [] // Ensure content is always an array
+            }));
+
             setSelectedService({
                 ...service,
-                sections: res.data.service.sections || [],
+                sections: sections,
                 hero_title: res.data.service.hero_title || service.service_name,
                 hero_subtitle: res.data.service.hero_subtitle || "Premium Service",
                 hero_cta_text: res.data.service.hero_cta_text || "Get Started",
@@ -140,26 +148,61 @@ export default function ServicesSection() {
                 gradient_from: res.data.service.gradient_from || colorPalette.primary,
                 gradient_to: res.data.service.gradient_to || colorPalette.accent,
                 short_description: res.data.service.short_description || ""
-            })
-        } catch (err) {
-            setErrorMsg("Failed to load content")
-            console.error(err)
-        } finally {
-            setLoading(false)
-        }
-    }
+            });
 
+            // Log for debugging
+            console.log("Loaded service data:", {
+                sectionCount: sections.length,
+                faqSections: sections.filter(s => s.section_type === 'faq').map(s => ({
+                    id: s.id,
+                    contentCount: s.content?.length
+                }))
+            });
+
+        } catch (err) {
+            console.error("Error loading content:", err);
+            setErrorMsg("Failed to load content");
+        } finally {
+            setLoading(false);
+        }
+    };
     const saveContent = async () => {
         try {
-            setSaving(true)
-            setErrorMsg("")
+            setSaving(true);
+            setErrorMsg("");
 
-            const formData = new FormData()
+            const formData = new FormData();
+            let hasImageChanges = false;
 
-            // Basic data with ALL fields
+            // Check for image changes
+            if (selectedService.heroImageFile || selectedService.heroBgFile) {
+                hasImageChanges = true;
+                console.log("🖼️ Detected hero image changes");
+            }
+
+            selectedService.sections.forEach((sec, idx) => {
+                if (sec.bgFile) {
+                    hasImageChanges = true;
+                    console.log(`🖼️ Detected section ${idx} background change`);
+                }
+                sec.content?.forEach((item, itemIdx) => {
+                    if (item.imageFile) {
+                        hasImageChanges = true;
+                        console.log(`🖼️ Detected item ${itemIdx} image change`);
+                    }
+                });
+            });
+
+            // Log what we're saving
+            console.log("💾 Saving changes...");
+            console.log("📊 Text changes:", !hasImageChanges ? "Only text" : "With images");
+            console.log("📁 Files to upload:",
+                [selectedService.heroImageFile, selectedService.heroBgFile].filter(Boolean).length
+            );
+
+            // Basic data (always send minimal data)
             const basicData = {
                 service_name: selectedService.service_name,
-                short_description: selectedService.short_description || "",
                 hero_title: selectedService.hero_title,
                 hero_subtitle: selectedService.hero_subtitle,
                 hero_cta_text: selectedService.hero_cta_text,
@@ -168,137 +211,182 @@ export default function ServicesSection() {
                 primary_color: selectedService.primary_color,
                 gradient_from: selectedService.gradient_from,
                 gradient_to: selectedService.gradient_to,
-                is_active: selectedService.is_active || 1
-            }
-            formData.append("basic", JSON.stringify(basicData))
+            };
 
-            // Sections data with ALL fields
+            // Only send these if they changed
+            if (selectedService.short_description) {
+                basicData.short_description = selectedService.short_description;
+            }
+            if (selectedService.is_active !== undefined) {
+                basicData.is_active = selectedService.is_active;
+            }
+
+            formData.append("basic", JSON.stringify(basicData));
+
+            // Sections data - preserve IDs for updates
+            // In your saveContent function, update the sectionsData mapping:
             const sectionsData = selectedService.sections.map((sec, secIdx) => ({
                 id: sec.id || null,
                 section_type: sec.section_type,
                 title: sec.title || "",
                 subtitle: sec.subtitle || "",
                 layout_style: sec.layout_style || "default",
+                background_image: sec.background_image || "",
                 cta_text: sec.cta_text || "",
                 cta_link: sec.cta_link || "",
                 secondary_cta_text: sec.secondary_cta_text || "",
                 secondary_cta_link: sec.secondary_cta_link || "",
                 sort_order: secIdx,
-                tempId: sec.tempId || `temp-sec-${Date.now()}-${secIdx}`,
-                content: sec.content?.map((item, itemIdx) => ({
-                    ...item,
-                    sort_order: itemIdx,
-                    tempId: item.tempId || `temp-item-${Date.now()}-${secIdx}-${itemIdx}`
-                })) || []
-            }))
-            formData.append("sections", JSON.stringify(sectionsData))
+                tempId: sec.tempId || (sec.id ? null : `temp-sec-${Date.now()}-${secIdx}`),
+                content: sec.content?.map((item, itemIdx) => {
+                    // Preserve existing IDs for FAQ items
+                    const itemId = item.id || null;
+                    const baseItem = {
+                        id: itemId,
+                        sort_order: itemIdx,
+                        tempId: item.tempId || (itemId ? null : `temp-item-${Date.now()}-${secIdx}-${itemIdx}`)
+                    };
 
-            // DEBUG: Log files before appending
-            console.log("=== DEBUG: Files to upload ===");
-            console.log("1. Hero image file:", selectedService.heroImageFile ? selectedService.heroImageFile.name : "None");
-            console.log("2. Hero background file:", selectedService.heroBgFile ? selectedService.heroBgFile.name : "None");
+                    // Add fields based on section type
+                    if (sec.section_type === "features") {
+                        return {
+                            ...baseItem,
+                            icon_name: item.icon_name || "CheckCircle",
+                            title: item.title || "",
+                            description: item.description || "",
+                            highlight: item.highlight || "",
+                            image: item.image || ""
+                        };
+                    } else if (["stats", "benefits"].includes(sec.section_type)) {
+                        return {
+                            ...baseItem,
+                            value: item.value || "",
+                            label: item.label || "",
+                            trend: item.trend || "",
+                            icon_name: item.icon_name || "TrendingUp"
+                        };
+                    } else if (sec.section_type === "process") {
+                        return {
+                            ...baseItem,
+                            step_number: item.step_number || "",
+                            title: item.title || "",
+                            description: item.description || "",
+                            stats: item.stats || "",
+                            icon_name: item.icon_name || "Clock",
+                            image: item.image || ""
+                        };
+                    } else if (["industries", "technologies"].includes(sec.section_type)) {
+                        return {
+                            ...baseItem,
+                            icon_name: item.icon_name || "Globe",
+                            title: item.title || "",
+                            description: item.description || "",
+                            stats: item.stats || "",
+                            color_from: item.color_from || colorPalette.primary,
+                            color_to: item.color_to || colorPalette.accent,
+                            link: item.link || ""
+                        };
+                    } else if (sec.section_type === "faq") {
+                        return {
+                            ...baseItem,
+                            question: item.question || "",
+                            answer: item.answer || ""
+                        };
+                    }
 
-            // Section background files
-            selectedService.sections.forEach((sec, idx) => {
+                    return baseItem;
+                }) || []
+            }));
+            formData.append("sections", JSON.stringify(sectionsData));
+
+            // Append ONLY changed files
+            if (selectedService.heroImageFile) {
+                formData.append("hero_image", selectedService.heroImageFile);
+            }
+            if (selectedService.heroBgFile) {
+                formData.append("hero_background_image", selectedService.heroBgFile);
+            }
+
+            // Section background images - only if changed
+            selectedService.sections.forEach(sec => {
                 if (sec.bgFile) {
-                    console.log(`3. Section ${idx} (${sec.section_type}) BG file:`, sec.bgFile.name);
+                    formData.append(`section_bg_${sec.tempId}`, sec.bgFile);
                 }
             });
 
-            // Item image files
-            selectedService.sections.forEach((sec, secIdx) => {
-                sec.content?.forEach((item, itemIdx) => {
+            // Item images - only if changed
+            selectedService.sections.forEach(sec => {
+                sec.content?.forEach(item => {
                     if (item.imageFile) {
-                        console.log(`4. Section ${secIdx}, Item ${itemIdx} image file:`, item.imageFile.name);
+                        formData.append(`item_image_${item.tempId}`, item.imageFile);
                     }
                 });
             });
 
-            // Media files
-            mediaFiles.forEach((file, idx) => {
-                if (file.file) {
-                    console.log(`5. Media file ${idx}:`, file.file.name);
-                }
-            });
-
-            // Append ALL files
-            if (selectedService.heroImageFile) {
-                formData.append("hero_image", selectedService.heroImageFile)
-            }
-            if (selectedService.heroBgFile) {
-                formData.append("hero_background_image", selectedService.heroBgFile)
-            }
-
-            // Section background images
-            selectedService.sections.forEach(sec => {
-                if (sec.bgFile) {
-                    formData.append(`section_bg_${sec.tempId}`, sec.bgFile)
-                }
-            })
-
-            // Item images
-            selectedService.sections.forEach(sec => {
-                sec.content?.forEach(item => {
-                    if (item.imageFile) {
-                        formData.append(`item_image_${item.tempId}`, item.imageFile)
-                    }
-                })
-            })
-
-            // Service media files
+            // Media files - always upload new ones
             mediaFiles.forEach((file, index) => {
                 if (file.file) {
-                    formData.append(`media_${index}`, file.file)
+                    formData.append(`media_${index}`, file.file);
                     formData.append(`media_data_${index}`, JSON.stringify({
                         alt_text: file.alt_text || "",
                         caption: file.caption || "",
                         media_type: file.media_type || "image"
+                    }));
+                }
+            });
+
+            console.log("🚀 Sending optimized update...");
+
+            const response = await axios.put(
+                `http://localhost:5000/api/service/content/${selectedService.id}`,
+                formData,
+                {
+                    withCredentials: true,
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    timeout: hasImageChanges ? 30000 : 10000 // Longer timeout for images
+                }
+            );
+
+            console.log("✅ Update successful:", response.data);
+
+            // Clear file references after successful upload
+            setSelectedService(prev => ({
+                ...prev,
+                heroImageFile: undefined,
+                heroBgFile: undefined,
+                sections: prev.sections.map(sec => ({
+                    ...sec,
+                    bgFile: undefined,
+                    content: sec.content?.map(item => ({
+                        ...item,
+                        imageFile: undefined
                     }))
-                }
-            })
-
-            // DEBUG: Check FormData content before sending
-            console.log("=== DEBUG: FormData entries ===");
-            for (let [key, value] of formData.entries()) {
-                if (value instanceof File) {
-                    console.log(`FormData [File]: ${key} = ${value.name} (${value.type}, ${value.size} bytes)`);
-                } else if (typeof value === 'string' && value.length > 100) {
-                    console.log(`FormData [JSON]: ${key} = ${value.substring(0, 100)}...`);
-                } else {
-                    console.log(`FormData [Text]: ${key} = ${value}`);
-                }
-            }
-
-            // Send request
-            console.log("=== Sending request to backend ===");
-            const response = await axios.put(`http://localhost:5000/api/service/content/${selectedService.id}`, formData, {
-                withCredentials: true,
-                headers: { 'Content-Type': 'multipart/form-data' }
-            })
-
-            console.log("=== Response from backend ===", response.data);
+                }))
+            }));
 
             // Success toast
-            const successEl = document.createElement('div')
-            successEl.className = 'fixed top-4 right-4 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg z-50'
-            successEl.textContent = '✅ Content saved successfully!'
-            document.body.appendChild(successEl)
-            setTimeout(() => successEl.remove(), 3000)
+            const successEl = document.createElement('div');
+            successEl.className = 'fixed top-4 right-4 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg z-50';
+            successEl.textContent = '✅ Changes saved successfully!';
+            document.body.appendChild(successEl);
+            setTimeout(() => successEl.remove(), 3000);
 
-            // Reload content
-            loadServiceContent(selectedService)
-            setMediaFiles([])
+            // Reload to get fresh data with correct IDs
+            loadServiceContent(selectedService);
+            setMediaFiles([]);
+
         } catch (err) {
-            console.error("=== ERROR Details ===");
-            console.error("Error message:", err.message);
-            console.error("Error response:", err.response?.data);
-            console.error("Error stack:", err.stack);
+            console.error("❌ Save failed:", err);
 
-            setErrorMsg(err.response?.data?.message || "Save failed")
+            if (err.code === 'ECONNABORTED') {
+                setErrorMsg("Request timed out. Please try again with smaller images.");
+            } else {
+                setErrorMsg(err.response?.data?.message || "Save failed");
+            }
         } finally {
-            setSaving(false)
+            setSaving(false);
         }
-    }
+    };
 
     const addSection = (type) => {
         const newSection = {
@@ -328,78 +416,75 @@ export default function ServicesSection() {
 
     const addItem = (sectionIndex) => {
         setSelectedService(prev => {
-            const sections = prev.sections.map((section, idx) => {
-                if (idx !== sectionIndex) return section
+            const sections = [...prev.sections];
+            const section = sections[sectionIndex];
+            const type = section.section_type;
 
-                let newItem = {}
-                const type = section.section_type
-                const tempId = `temp-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+            // Generate a unique temp ID
+            const tempId = `temp-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-                if (type === "features") {
-                    newItem = {
-                        id: tempId,
-                        icon_name: "CheckCircle",
-                        title: "New Feature",
-                        description: "Feature description",
-                        highlight: "New",
-                        image: "",
-                        sort_order: section.content?.length || 0,
-                        tempId: tempId
-                    }
-                } else if (["stats", "benefits"].includes(type)) {
-                    newItem = {
-                        id: tempId,
-                        value: "99%",
-                        label: "Success Rate",
-                        trend: "+5%",
-                        icon_name: "TrendingUp",
-                        sort_order: section.content?.length || 0,
-                        tempId: tempId
-                    }
-                } else if (type === "process") {
-                    newItem = {
-                        id: tempId,
-                        step_number: "01",
-                        title: "Step Title",
-                        description: "Step details here",
-                        stats: "",
-                        icon_name: "Clock",
-                        image: "",
-                        sort_order: section.content?.length || 0,
-                        tempId: tempId
-                    }
-                } else if (["industries", "technologies"].includes(type)) {
-                    newItem = {
-                        id: tempId,
-                        icon_name: "Globe",
-                        title: "New Item",
-                        description: "Item description",
-                        stats: "",
-                        color_from: colorPalette.primary,
-                        color_to: colorPalette.accent,
-                        link: "",
-                        sort_order: section.content?.length || 0,
-                        tempId: tempId
-                    }
-                } else if (type === "faq") {
-                    newItem = {
-                        id: tempId,
-                        question: "Frequently asked question?",
-                        answer: "Detailed answer goes here.",
-                        sort_order: section.content?.length || 0,
-                        tempId: tempId
-                    }
-                }
+            let newItem = {
+                tempId: tempId,
+                sort_order: section.content?.length || 0
+            };
 
-                return {
-                    ...section,
-                    content: [...(section.content || []), newItem]
-                }
-            })
+            if (type === "features") {
+                newItem = {
+                    ...newItem,
+                    icon_name: "CheckCircle",
+                    title: "New Feature",
+                    description: "Feature description",
+                    highlight: "New",
+                    image: ""
+                };
+            } else if (["stats", "benefits"].includes(type)) {
+                newItem = {
+                    ...newItem,
+                    value: "99%",
+                    label: "Success Rate",
+                    trend: "+5%",
+                    icon_name: "TrendingUp"
+                };
+            } else if (type === "process") {
+                newItem = {
+                    ...newItem,
+                    step_number: "01",
+                    title: "Step Title",
+                    description: "Step details here",
+                    stats: "",
+                    icon_name: "Clock",
+                    image: ""
+                };
+            } else if (["industries", "technologies"].includes(type)) {
+                newItem = {
+                    ...newItem,
+                    icon_name: "Globe",
+                    title: "New Item",
+                    description: "Item description",
+                    stats: "",
+                    color_from: colorPalette.primary,
+                    color_to: colorPalette.accent,
+                    link: ""
+                };
+            } else if (type === "faq") {
+                newItem = {
+                    ...newItem,
+                    question: "Frequently asked question?",
+                    answer: "Detailed answer goes here."
+                };
+            }
 
-            return { ...prev, sections }
-        })
-    }
+            // Create a new section with the added item
+            const updatedSection = {
+                ...section,
+                content: [...(section.content || []), newItem]
+            };
+
+            sections[sectionIndex] = updatedSection;
+
+            return { ...prev, sections };
+        });
+    };
 
     const updateItem = (sectionIndex, itemIndex, field, value) => {
         setSelectedService(prev => {
@@ -411,11 +496,19 @@ export default function ServicesSection() {
 
     const deleteItem = (sectionIndex, itemIndex) => {
         setSelectedService(prev => {
-            const sections = [...prev.sections]
-            sections[sectionIndex].content.splice(itemIndex, 1)
-            return { ...prev, sections }
-        })
-    }
+            const sections = [...prev.sections];
+
+            if (sections[sectionIndex]?.content) {
+                // Remove item by index
+                sections[sectionIndex] = {
+                    ...sections[sectionIndex],
+                    content: sections[sectionIndex].content.filter((_, idx) => idx !== itemIndex)
+                };
+            }
+
+            return { ...prev, sections };
+        });
+    };
 
     const updateSectionField = (sectionIndex, field, value) => {
         setSelectedService(prev => {
@@ -424,106 +517,148 @@ export default function ServicesSection() {
             return { ...prev, sections }
         })
     }
+
     const compressImage = async (file, maxWidth = 1200, quality = 0.8) => {
         return new Promise((resolve, reject) => {
+            // If file is not an image or too small, return as-is
+            if (!file.type.startsWith('image/') || file.size < 1024 * 1024) {
+                console.log("Skipping compression for small or non-image file");
+                resolve(file);
+                return;
+            }
+
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (event) => {
                 const img = new Image();
                 img.src = event.target.result;
                 img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
+                    try {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
 
-                    // Resize if too large
-                    if (width > maxWidth) {
-                        height = Math.round((height * maxWidth) / width);
-                        width = maxWidth;
+                        // Resize if too large
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob(
+                            (blob) => {
+                                if (!blob) {
+                                    console.warn('Compression failed, using original file');
+                                    resolve(file);
+                                    return;
+                                }
+                                // Convert blob back to file
+                                const compressedFile = new File([blob], file.name, {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now(),
+                                });
+                                console.log(`Compressed from ${file.size} to ${compressedFile.size} bytes`);
+                                resolve(compressedFile);
+                            },
+                            'image/jpeg',
+                            quality
+                        );
+                    } catch (error) {
+                        console.error("Canvas compression error:", error);
+                        resolve(file); // Fallback to original
                     }
-
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    canvas.toBlob(
-                        (blob) => {
-                            if (!blob) {
-                                reject(new Error('Canvas is empty'));
-                                return;
-                            }
-                            // Convert blob back to file
-                            const compressedFile = new File([blob], file.name, {
-                                type: 'image/jpeg',
-                                lastModified: Date.now(),
-                            });
-                            resolve(compressedFile);
-                        },
-                        'image/jpeg',
-                        quality
-                    );
                 };
-                img.onerror = reject;
+                img.onerror = () => {
+                    console.error("Image loading error");
+                    resolve(file); // Fallback to original
+                };
             };
-            reader.onerror = reject;
+            reader.onerror = () => {
+                console.error("File reading error");
+                resolve(file); // Fallback to original
+            };
         });
     };
 
     const handleImageUpload = async (field, file, sectionIndex = null, itemIndex = null) => {
-        if (!file) return
+        if (!file) return;
 
-        console.log(`Uploading ${field}:`, file.name);
+        console.log(`Uploading ${field}:`, file.name, `Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
         try {
-            // Compress image if > 1MB
+            // Only compress if it's an image and larger than 1MB
             let processedFile = file;
-            if (file.size > 1024 * 1024) { // 1MB
+            if (file.type.startsWith('image/') && file.size > 1024 * 1024) {
                 console.log("Compressing image...");
                 processedFile = await compressImage(file, 1200, 0.7);
-                console.log(`Compressed from ${file.size} to ${processedFile.size} bytes`);
             }
 
-            // ... rest of your existing code
+            const objectUrl = URL.createObjectURL(processedFile);
+
+            if (field === "hero_image") {
+                setSelectedService(prev => ({
+                    ...prev,
+                    heroImageFile: processedFile,
+                    hero_image: objectUrl
+                }));
+                console.log("Hero image uploaded successfully");
+            } else if (field === "hero_background_image") {
+                setSelectedService(prev => ({
+                    ...prev,
+                    heroBgFile: processedFile,
+                    hero_background_image: objectUrl
+                }));
+                console.log("Hero background uploaded successfully");
+            } else if (field === "section_bg") {
+                setSelectedService(prev => {
+                    const sections = [...prev.sections];
+                    sections[sectionIndex] = {
+                        ...sections[sectionIndex],
+                        bgFile: processedFile,
+                        background_image: objectUrl,
+                        tempId: sections[sectionIndex].tempId || `temp-sec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+                    };
+                    return { ...prev, sections };
+                });
+                console.log(`Section ${sectionIndex} background uploaded`);
+            } else if (field === "item_image") {
+                setSelectedService(prev => {
+                    const sections = [...prev.sections];
+                    sections[sectionIndex].content[itemIndex] = {
+                        ...sections[sectionIndex].content[itemIndex],
+                        imageFile: processedFile,
+                        image: objectUrl,
+                        tempId: sections[sectionIndex].content[itemIndex].tempId || `temp-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+                    };
+                    return { ...prev, sections };
+                });
+                console.log(`Item image uploaded to section ${sectionIndex}, item ${itemIndex}`);
+            }
         } catch (error) {
-            console.error("Image compression failed:", error);
-            // Fallback to original file
-            processedFile = file;
-        }
+            console.error("Image upload failed:", error);
+            // Use original file as fallback
+            const objectUrl = URL.createObjectURL(file);
 
-
-        if (field === "hero_image") {
-            setSelectedService(prev => ({
-                ...prev,
-                heroImageFile: processedFile,
-                hero_image: URL.createObjectURL(processedFile)
-            }))
-        } else if (field === "hero_background_image") {
-            setSelectedService(prev => ({ ...prev, heroBgFile: file, hero_background_image: URL.createObjectURL(file) }))
-        } else if (field === "section_bg") {
-            setSelectedService(prev => {
-                const sections = [...prev.sections]
-                sections[sectionIndex] = {
-                    ...sections[sectionIndex],
-                    bgFile: file,
-                    background_image: URL.createObjectURL(file),
-                    tempId: sections[sectionIndex].tempId || `temp-sec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-                }
-                return { ...prev, sections }
-            })
-        } else if (field === "item_image") {
-            setSelectedService(prev => {
-                const sections = [...prev.sections]
-                sections[sectionIndex].content[itemIndex] = {
-                    ...sections[sectionIndex].content[itemIndex],
-                    imageFile: file,
-                    image: URL.createObjectURL(file),
-                    tempId: sections[sectionIndex].content[itemIndex].tempId || `temp-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-                }
-                return { ...prev, sections }
-            })
+            if (field === "hero_image") {
+                setSelectedService(prev => ({
+                    ...prev,
+                    heroImageFile: file,
+                    hero_image: objectUrl
+                }));
+            } else if (field === "hero_background_image") {
+                setSelectedService(prev => ({
+                    ...prev,
+                    heroBgFile: file,
+                    hero_background_image: objectUrl
+                }));
+            }
         }
-    }
+    };
 
     const addMediaFile = (file) => {
         if (!file) return
@@ -830,6 +965,13 @@ export default function ServicesSection() {
                                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                                 Save Changes
                             </button>
+                            {/* Add near the save button */}
+                            {saving && (
+                                <div className="fixed bottom-4 right-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg z-50 flex items-center gap-2">
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Saving changes...
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -1194,7 +1336,7 @@ export default function ServicesSection() {
                                             {/* Section Content Items */}
                                             <div className="p-4 space-y-3">
                                                 {section.content.map((item, iIdx) => (
-                                                    <div key={item.id} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900">
+                                                    <div key={item.tempId || item.id || iIdx} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900">
                                                         <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                                                             <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{iIdx + 1}</span>
                                                         </div>
@@ -1398,7 +1540,7 @@ export default function ServicesSection() {
                                                         </div>
 
                                                         <button
-                                                            onClick={() => deleteItem(sIdx, iIdx)}
+                                                            onClick={() => deleteItem(sIdx, iIdx)}  // Pass section index and item index
                                                             className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors shrink-0"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
@@ -1521,6 +1663,6 @@ export default function ServicesSection() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     )
 }

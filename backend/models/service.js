@@ -84,52 +84,63 @@ export const createService = async ({ service_name, user_id }) => {
 // models/service.js (add these to your existing file)
 
 export const getServiceForEdit = async (serviceId) => {
-    const [services] = await db
-        .promise()
-        .execute("SELECT * FROM services WHERE id = ?", [serviceId]);
+    try {
+        const [services] = await db
+            .promise()
+            .execute("SELECT * FROM services WHERE id = ?", [serviceId]);
 
-    if (services.length === 0) return null;
+        if (services.length === 0) return null;
 
-    const service = services[0];
+        const service = services[0];
 
-    const [sections] = await db
-        .promise()
-        .execute(
-            "SELECT * FROM service_sections WHERE service_id = ? ORDER BY sort_order",
-            [service.id]
-        );
-
-    for (let section of sections) {
-        let content = [];
-        const { section_type, id: sectionId } = section;
-
-        if (section_type === "features") {
-            [content] = await db.promise().execute(
-                "SELECT * FROM service_features WHERE section_id = ? ORDER BY sort_order",
-                [sectionId]
+        const [sections] = await db
+            .promise()
+            .execute(
+                "SELECT * FROM service_sections WHERE service_id = ? ORDER BY sort_order",
+                [service.id]
             );
-        } else if (["stats", "benefits"].includes(section_type)) {
-            [content] = await db.promise().execute(
-                "SELECT * FROM service_stats WHERE section_id = ? ORDER BY sort_order",
-                [sectionId]
-            );
-        } else if (section_type === "process") {
-            [content] = await db.promise().execute(
-                "SELECT * FROM service_process_steps WHERE section_id = ? ORDER BY sort_order",
-                [sectionId]
-            );
-        } else if (["industries", "technologies"].includes(section_type)) {
-            [content] = await db.promise().execute(
-                "SELECT * FROM service_grid_items WHERE section_id = ? ORDER BY sort_order",
-                [sectionId]
-            );
+
+        for (let section of sections) {
+            let content = [];
+            const { section_type, id: sectionId } = section;
+
+            // Load appropriate content based on section type
+            if (section_type === "features") {
+                [content] = await db.promise().execute(
+                    "SELECT * FROM service_features WHERE section_id = ? ORDER BY sort_order",
+                    [sectionId]
+                );
+            } else if (["stats", "benefits"].includes(section_type)) {
+                [content] = await db.promise().execute(
+                    "SELECT * FROM service_stats WHERE section_id = ? ORDER BY sort_order",
+                    [sectionId]
+                );
+            } else if (section_type === "process") {
+                [content] = await db.promise().execute(
+                    "SELECT * FROM service_process_steps WHERE section_id = ? ORDER BY sort_order",
+                    [sectionId]
+                );
+            } else if (["industries", "technologies"].includes(section_type)) {
+                [content] = await db.promise().execute(
+                    "SELECT * FROM service_grid_items WHERE section_id = ? ORDER BY sort_order",
+                    [sectionId]
+                );
+            } else if (section_type === "faq") {
+                [content] = await db.promise().execute(
+                    "SELECT * FROM service_faqs WHERE section_id = ? ORDER BY sort_order",
+                    [sectionId]
+                );
+            }
+
+            section.content = content;
         }
 
-        section.content = content;
+        service.sections = sections;
+        return service;
+    } catch (error) {
+        console.error("Error in getServiceForEdit:", error);
+        throw error;
     }
-
-    service.sections = sections;
-    return service;
 };
 
 // Update basic service info (slug, colors, titles, etc.)
