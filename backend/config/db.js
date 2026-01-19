@@ -16,6 +16,7 @@ const pool = mysql.createPool({
     timeout: 10000,
 });
 
+
 const testDatabase = async () => {
     try {
         const connection = await pool.promise().getConnection();
