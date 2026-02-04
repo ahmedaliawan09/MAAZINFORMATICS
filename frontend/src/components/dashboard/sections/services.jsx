@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -128,10 +127,9 @@ export default function ServicesSection() {
             setLoading(true);
             const res = await axios.get(`http://localhost:5000/api/service/content/${service.id}`);
 
-            // Ensure sections have proper structure
             const sections = (res.data.service.sections || []).map(section => ({
                 ...section,
-                content: section.content || [] // Ensure content is always an array
+                content: section.content || []
             }));
 
             setSelectedService({
@@ -150,7 +148,6 @@ export default function ServicesSection() {
                 short_description: res.data.service.short_description || ""
             });
 
-            // Log for debugging
             console.log("Loaded service data:", {
                 sectionCount: sections.length,
                 faqSections: sections.filter(s => s.section_type === 'faq').map(s => ({
@@ -166,6 +163,7 @@ export default function ServicesSection() {
             setLoading(false);
         }
     };
+
     const saveContent = async () => {
         try {
             setSaving(true);
@@ -174,7 +172,6 @@ export default function ServicesSection() {
             const formData = new FormData();
             let hasImageChanges = false;
 
-            // Check for image changes
             if (selectedService.heroImageFile || selectedService.heroBgFile) {
                 hasImageChanges = true;
                 console.log("🖼️ Detected hero image changes");
@@ -193,14 +190,12 @@ export default function ServicesSection() {
                 });
             });
 
-            // Log what we're saving
             console.log("💾 Saving changes...");
             console.log("📊 Text changes:", !hasImageChanges ? "Only text" : "With images");
             console.log("📁 Files to upload:",
                 [selectedService.heroImageFile, selectedService.heroBgFile].filter(Boolean).length
             );
 
-            // Basic data (always send minimal data)
             const basicData = {
                 service_name: selectedService.service_name,
                 hero_title: selectedService.hero_title,
@@ -213,7 +208,6 @@ export default function ServicesSection() {
                 gradient_to: selectedService.gradient_to,
             };
 
-            // Only send these if they changed
             if (selectedService.short_description) {
                 basicData.short_description = selectedService.short_description;
             }
@@ -223,8 +217,6 @@ export default function ServicesSection() {
 
             formData.append("basic", JSON.stringify(basicData));
 
-            // Sections data - preserve IDs for updates
-            // In your saveContent function, update the sectionsData mapping:
             const sectionsData = selectedService.sections.map((sec, secIdx) => ({
                 id: sec.id || null,
                 section_type: sec.section_type,
@@ -239,7 +231,6 @@ export default function ServicesSection() {
                 sort_order: secIdx,
                 tempId: sec.tempId || (sec.id ? null : `temp-sec-${Date.now()}-${secIdx}`),
                 content: sec.content?.map((item, itemIdx) => {
-                    // Preserve existing IDs for FAQ items
                     const itemId = item.id || null;
                     const baseItem = {
                         id: itemId,
@@ -247,7 +238,6 @@ export default function ServicesSection() {
                         tempId: item.tempId || (itemId ? null : `temp-item-${Date.now()}-${secIdx}-${itemIdx}`)
                     };
 
-                    // Add fields based on section type
                     if (sec.section_type === "features") {
                         return {
                             ...baseItem,
@@ -299,7 +289,6 @@ export default function ServicesSection() {
             }));
             formData.append("sections", JSON.stringify(sectionsData));
 
-            // Append ONLY changed files
             if (selectedService.heroImageFile) {
                 formData.append("hero_image", selectedService.heroImageFile);
             }
@@ -307,14 +296,12 @@ export default function ServicesSection() {
                 formData.append("hero_background_image", selectedService.heroBgFile);
             }
 
-            // Section background images - only if changed
             selectedService.sections.forEach(sec => {
                 if (sec.bgFile) {
                     formData.append(`section_bg_${sec.tempId}`, sec.bgFile);
                 }
             });
 
-            // Item images - only if changed
             selectedService.sections.forEach(sec => {
                 sec.content?.forEach(item => {
                     if (item.imageFile) {
@@ -323,7 +310,6 @@ export default function ServicesSection() {
                 });
             });
 
-            // Media files - always upload new ones
             mediaFiles.forEach((file, index) => {
                 if (file.file) {
                     formData.append(`media_${index}`, file.file);
@@ -343,13 +329,12 @@ export default function ServicesSection() {
                 {
                     withCredentials: true,
                     headers: { 'Content-Type': 'multipart/form-data' },
-                    timeout: hasImageChanges ? 30000 : 10000 // Longer timeout for images
+                    timeout: hasImageChanges ? 30000 : 10000
                 }
             );
 
             console.log("✅ Update successful:", response.data);
 
-            // Clear file references after successful upload
             setSelectedService(prev => ({
                 ...prev,
                 heroImageFile: undefined,
@@ -364,14 +349,12 @@ export default function ServicesSection() {
                 }))
             }));
 
-            // Success toast
             const successEl = document.createElement('div');
             successEl.className = 'fixed top-4 right-4 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg z-50';
             successEl.textContent = '✅ Changes saved successfully!';
             document.body.appendChild(successEl);
             setTimeout(() => successEl.remove(), 3000);
 
-            // Reload to get fresh data with correct IDs
             loadServiceContent(selectedService);
             setMediaFiles([]);
 
@@ -420,7 +403,6 @@ export default function ServicesSection() {
             const section = sections[sectionIndex];
             const type = section.section_type;
 
-            // Generate a unique temp ID
             const tempId = `temp-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
             let newItem = {
@@ -474,7 +456,6 @@ export default function ServicesSection() {
                 };
             }
 
-            // Create a new section with the added item
             const updatedSection = {
                 ...section,
                 content: [...(section.content || []), newItem]
@@ -499,7 +480,6 @@ export default function ServicesSection() {
             const sections = [...prev.sections];
 
             if (sections[sectionIndex]?.content) {
-                // Remove item by index
                 sections[sectionIndex] = {
                     ...sections[sectionIndex],
                     content: sections[sectionIndex].content.filter((_, idx) => idx !== itemIndex)
@@ -520,7 +500,6 @@ export default function ServicesSection() {
 
     const compressImage = async (file, maxWidth = 1200, quality = 0.8) => {
         return new Promise((resolve, reject) => {
-            // If file is not an image or too small, return as-is
             if (!file.type.startsWith('image/') || file.size < 1024 * 1024) {
                 console.log("Skipping compression for small or non-image file");
                 resolve(file);
@@ -538,7 +517,6 @@ export default function ServicesSection() {
                         let width = img.width;
                         let height = img.height;
 
-                        // Resize if too large
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
@@ -557,7 +535,6 @@ export default function ServicesSection() {
                                     resolve(file);
                                     return;
                                 }
-                                // Convert blob back to file
                                 const compressedFile = new File([blob], file.name, {
                                     type: 'image/jpeg',
                                     lastModified: Date.now(),
@@ -570,17 +547,17 @@ export default function ServicesSection() {
                         );
                     } catch (error) {
                         console.error("Canvas compression error:", error);
-                        resolve(file); // Fallback to original
+                        resolve(file);
                     }
                 };
                 img.onerror = () => {
                     console.error("Image loading error");
-                    resolve(file); // Fallback to original
+                    resolve(file);
                 };
             };
             reader.onerror = () => {
                 console.error("File reading error");
-                resolve(file); // Fallback to original
+                resolve(file);
             };
         });
     };
@@ -591,7 +568,6 @@ export default function ServicesSection() {
         console.log(`Uploading ${field}:`, file.name, `Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
 
         try {
-            // Only compress if it's an image and larger than 1MB
             let processedFile = file;
             if (file.type.startsWith('image/') && file.size > 1024 * 1024) {
                 console.log("Compressing image...");
@@ -641,7 +617,6 @@ export default function ServicesSection() {
             }
         } catch (error) {
             console.error("Image upload failed:", error);
-            // Use original file as fallback
             const objectUrl = URL.createObjectURL(file);
 
             if (field === "hero_image") {
@@ -688,38 +663,48 @@ export default function ServicesSection() {
     // List View
     if (!selectedService) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-                {/* Header */}
-                <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-                    <div className="px-6 py-4">
-                        <div className="flex items-center justify-between">
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
+                {/* Modern Header with Glass Effect */}
+                <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm">
+                    <div className="px-8 py-6">
+                        <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Services Manager</h1>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage and customize service pages</p>
+                                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                                    Services Manager
+                                </h1>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                    Manage and customize your service pages with ease
+                                </p>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-4">
+                                {/* Search Bar */}
                                 <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <input
                                         type="text"
                                         placeholder="Search services..."
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
-                                        className="pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl w-80 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                     />
                                 </div>
-                                <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                {/* View Toggle */}
+                                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700">
                                     <button
                                         onClick={() => setViewMode("grid")}
-                                        className={`px-3 py-2 ${viewMode === "grid" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400" : "text-gray-500"}`}
+                                        className={`px-4 py-2 rounded-lg transition-all ${viewMode === "grid" 
+                                            ? "bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm" 
+                                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"}`}
                                     >
-                                        <Grid className="w-4 h-4" />
+                                        <Grid className="w-5 h-5" />
                                     </button>
                                     <button
                                         onClick={() => setViewMode("list")}
-                                        className={`px-3 py-2 ${viewMode === "list" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400" : "text-gray-500"}`}
+                                        className={`px-4 py-2 rounded-lg transition-all ${viewMode === "list" 
+                                            ? "bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm" 
+                                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"}`}
                                     >
-                                        <List className="w-4 h-4" />
+                                        <List className="w-5 h-5" />
                                     </button>
                                 </div>
                             </div>
@@ -728,125 +713,138 @@ export default function ServicesSection() {
                 </div>
 
                 {/* Main Content */}
-                <div className="p-6">
+                <div className="p-8 max-w-7xl mx-auto">
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Services</p>
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{services.length}</h3>
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Services</p>
+                                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{services.length}</h3>
                                 </div>
-                                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                                    <Layers className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                                    <Layers className="w-7 h-7 text-white" />
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">Active</p>
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{services.length}</h3>
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Services</p>
+                                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{services.length}</h3>
                                 </div>
-                                <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                                    <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/30">
+                                    <TrendingUp className="w-7 h-7 text-white" />
                                 </div>
                             </div>
                         </div>
-
-                        <div className="bg-white dark:bg-gray-900 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">Performance</p>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mt-1">Excellent</h3>
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Performance</p>
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-2">Excellent</h3>
                                 </div>
-                                <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                                    <BarChart3 className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
+                                    <BarChart3 className="w-7 h-7 text-white" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Add Service Card */}
-                    <div className="bg-linear-to-r from-purple-500 to-indigo-600 rounded-xl p-6 mb-6">
+                    <div className="bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 rounded-2xl p-8 mb-8 shadow-xl shadow-purple-500/20">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-xl font-bold text-white">Create New Service</h3>
-                                <p className="text-purple-100 mt-1">Add a new service page to your portfolio</p>
+                                <h3 className="text-2xl font-bold text-white">Create New Service</h3>
+                                <p className="text-purple-100 mt-2">Add a new service page to your portfolio</p>
                             </div>
-                            <form onSubmit={handleAddService} className="flex gap-2">
+                            <form onSubmit={handleAddService} className="flex gap-3">
                                 <input
                                     type="text"
                                     value={newServiceName}
                                     onChange={(e) => setNewServiceName(e.target.value)}
                                     placeholder="Enter service name"
-                                    className="px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white/50 w-64"
+                                    className="px-5 py-3 rounded-xl bg-white/20 backdrop-blur-sm border border-white/30 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-white/50 w-80 font-medium"
                                     disabled={loading}
                                 />
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="px-4 py-2 bg-white text-purple-600 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2"
+                                    className="px-6 py-3 bg-white text-purple-600 rounded-xl font-semibold hover:bg-gray-50 transition-all flex items-center gap-2 shadow-lg disabled:opacity-50"
                                 >
-                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                                    Create
+                                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                                    Create Service
                                 </button>
                             </form>
                         </div>
+                        {errorMsg && (
+                            <div className="mt-4 px-4 py-3 bg-red-500/20 border border-red-300/30 rounded-xl text-red-100 text-sm">
+                                {errorMsg}
+                            </div>
+                        )}
                     </div>
 
                     {/* Services Grid */}
                     {viewMode === "grid" ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {services.filter(s => !query || s.service_name.toLowerCase().includes(query.toLowerCase())).map((service) => (
                                 <motion.div
                                     key={service.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow"
+                                    className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300"
                                 >
                                     <div
-                                        className="h-2 w-full"
+                                        className="h-3 w-full"
                                         style={{
                                             background: `linear-gradient(90deg, ${service.gradient_from || colorPalette.primary}, ${service.gradient_to || colorPalette.accent})`
                                         }}
                                     />
-                                    <div className="p-5">
+                                    <div className="p-6">
                                         <div className="flex items-start justify-between mb-4">
-                                            <div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white text-lg">{service.service_name}</h3>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">/services/{service.slug}</p>
+                                            <div className="flex-1">
+                                                <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                                    {service.service_name}
+                                                </h3>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-lg inline-block">
+                                                    /services/{service.slug}
+                                                </p>
                                             </div>
-                                            <button className="text-gray-400 hover:text-gray-600">
-                                                <MoreVertical className="w-5 h-5" />
-                                            </button>
                                         </div>
 
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <span className="px-2 py-1 text-xs rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                                        <div className="flex items-center gap-2 mb-5">
+                                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
                                                 Active
                                             </span>
                                             {service.updated_at && (
-                                                <span className="text-xs text-gray-500">
-                                                    Updated {new Date(service.updated_at).toLocaleDateString()}
+                                                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                                    <Calendar className="w-3 h-3" />
+                                                    {new Date(service.updated_at).toLocaleDateString()}
                                                 </span>
                                             )}
                                         </div>
 
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-3">
                                             <button
                                                 onClick={() => loadServiceContent(service)}
-                                                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                                                className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg shadow-purple-500/30"
                                             >
                                                 <Edit2 className="w-4 h-4" />
                                                 Edit
                                             </button>
                                             <button
                                                 onClick={() => window.open(`/services/${service.slug}`, "_blank")}
-                                                className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                                className="px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                                                 title="Preview"
                                             >
                                                 <Eye className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => deleteService(service.id)}
+                                                className="px-4 py-3 border-2 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+                                                title="Delete"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </div>
@@ -854,56 +852,57 @@ export default function ServicesSection() {
                             ))}
                         </div>
                     ) : (
+
                         /* Table View */
-                        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="border-b border-gray-200 dark:border-gray-800">
-                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Service</th>
-                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Last Updated</th>
-                                        <th className="text-left p-4 text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
+                                    <tr className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+                                        <th className="text-left p-5 text-sm font-semibold text-gray-700 dark:text-gray-300">Service</th>
+                                        <th className="text-left p-5 text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                                        <th className="text-left p-5 text-sm font-semibold text-gray-700 dark:text-gray-300">Last Updated</th>
+                                        <th className="text-left p-5 text-sm font-semibold text-gray-700 dark:text-gray-300">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {services.filter(s => !query || s.service_name.toLowerCase().includes(query.toLowerCase())).map((service) => (
-                                        <tr key={service.id} className="border-b border-gray-200 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-3">
+                                        <tr key={service.id} className="border-b border-gray-200 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                            <td className="p-5">
+                                                <div className="flex items-center gap-4">
                                                     <div
-                                                        className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm"
                                                         style={{
-                                                            background: `linear-gradient(135deg, ${service.gradient_from || colorPalette.primary}20, ${service.gradient_to || colorPalette.accent}20)`
+                                                            background: `linear-gradient(135deg, ${service.gradient_from || colorPalette.primary}30, ${service.gradient_to || colorPalette.accent}30)`
                                                         }}
                                                     >
-                                                        <Layers className="w-5 h-5" style={{ color: service.primary_color || colorPalette.primary }} />
+                                                        <Layers className="w-6 h-6" style={{ color: service.primary_color || colorPalette.primary }} />
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-medium text-gray-900 dark:text-white">{service.service_name}</h4>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">/services/{service.slug}</p>
+                                                        <h4 className="font-semibold text-gray-900 dark:text-white text-base">{service.service_name}</h4>
+                                                        <p className="text-sm text-gray-500 dark:text-gray-400 font-mono">/services/{service.slug}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-4">
-                                                <span className="px-3 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                                            <td className="p-5">
+                                                <span className="px-3 py-1.5 text-xs font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
                                                     Active
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-gray-500 dark:text-gray-400 text-sm">
+                                            <td className="p-5 text-gray-600 dark:text-gray-400 text-sm font-medium">
                                                 {service.updated_at ? new Date(service.updated_at).toLocaleDateString() : 'Never'}
                                             </td>
-                                            <td className="p-4">
+                                            <td className="p-5">
                                                 <div className="flex items-center gap-2">
                                                     <button
                                                         onClick={() => loadServiceContent(service)}
-                                                        className="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors flex items-center gap-2"
+                                                        className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition-colors flex items-center gap-2 shadow-sm"
                                                     >
-                                                        <Edit2 className="w-3 h-3" />
+                                                        <Edit2 className="w-4 h-4" />
                                                         Edit
                                                     </button>
                                                     <button
                                                         onClick={() => deleteService(service.id)}
-                                                        className="px-3 py-1.5 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                                        className="px-4 py-2 border-2 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                                     >
                                                         Delete
                                                     </button>
@@ -922,37 +921,37 @@ export default function ServicesSection() {
 
     // Content Editor View
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
             {/* Editor Header */}
-            <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                <div className="px-6 py-4">
+            <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm">
+                <div className="px-8 py-5">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-5">
                             <button
                                 onClick={() => setSelectedService(null)}
-                                className="flex items-center gap-2 px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 font-medium"
                             >
                                 <ChevronLeft className="w-5 h-5" />
                                 <span>Back to Services</span>
                             </button>
-                            <div className="h-6 w-px bg-gray-200 dark:bg-gray-800" />
+                            <div className="h-8 w-px bg-gray-300 dark:bg-gray-700" />
                             <div>
-                                <h1 className="text-xl font-bold text-gray-900 dark:text-white">{selectedService.service_name}</h1>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Editing service content</p>
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedService.service_name}</h1>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Editing service content and settings</p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={() => window.open(`/services/${selectedService.slug}`, "_blank")}
-                                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                className="flex items-center gap-2 px-5 py-2.5 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all font-medium"
                             >
                                 <Eye className="w-4 h-4" />
                                 Preview
                             </button>
                             <button
                                 onClick={() => navigator.clipboard?.writeText(`/services/${selectedService.slug}`)}
-                                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                className="flex items-center gap-2 px-5 py-2.5 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all font-medium"
                             >
                                 <Copy className="w-4 h-4" />
                                 Copy URL
@@ -960,30 +959,23 @@ export default function ServicesSection() {
                             <button
                                 onClick={saveContent}
                                 disabled={saving}
-                                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
+                                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all disabled:opacity-50 font-semibold shadow-lg shadow-purple-500/30"
                             >
-                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                Save Changes
+                                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                                {saving ? "Saving..." : "Save Changes"}
                             </button>
-                            {/* Add near the save button */}
-                            {saving && (
-                                <div className="fixed bottom-4 right-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg z-50 flex items-center gap-2">
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                    Saving changes...
-                                </div>
-                            )}
                         </div>
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex gap-1 mt-4">
+                    <div className="flex gap-2 mt-5">
                         {["content", "media"].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab
-                                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
-                                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${activeTab === tab
+                                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 shadow-sm"
+                                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                                     }`}
                             >
                                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -994,40 +986,43 @@ export default function ServicesSection() {
             </div>
 
             {/* Editor Content */}
-            <div className="p-6">
+            <div className="p-8 max-w-7xl mx-auto">
                 {activeTab === "content" ? (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Left Panel - Basic Settings */}
                         <div className="lg:col-span-1 space-y-6">
                             {/* Service Basic Info */}
-                            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Service Info</h3>
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-5 flex items-center gap-2">
+                                    <Settings className="w-5 h-5 text-purple-600" />
+                                    Service Info
+                                </h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Service Name</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Service Name</label>
                                         <input
                                             type="text"
                                             value={selectedService.service_name}
                                             onChange={(e) => setSelectedService(prev => ({ ...prev, service_name: e.target.value }))}
-                                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Short Description</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Short Description</label>
                                         <textarea
                                             value={selectedService.short_description || ""}
                                             onChange={(e) => setSelectedService(prev => ({ ...prev, short_description: e.target.value }))}
                                             rows={3}
-                                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
                                             placeholder="Brief description for listings"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Status</label>
                                         <select
                                             value={selectedService.is_active || 1}
                                             onChange={(e) => setSelectedService(prev => ({ ...prev, is_active: parseInt(e.target.value) }))}
-                                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                         >
                                             <option value={1}>Active</option>
                                             <option value={0}>Inactive</option>
@@ -1037,82 +1032,84 @@ export default function ServicesSection() {
                             </div>
 
                             {/* Hero Section Settings */}
-                            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Hero Section</h3>
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-5 flex items-center gap-2">
+                                    <ImageIcon className="w-5 h-5 text-purple-600" />
+                                    Hero Section
+                                </h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hero Title</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hero Title</label>
                                         <input
                                             type="text"
                                             value={selectedService.hero_title}
                                             onChange={(e) => setSelectedService(prev => ({ ...prev, hero_title: e.target.value }))}
-                                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hero Subtitle</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hero Subtitle</label>
                                         <textarea
                                             value={selectedService.hero_subtitle}
                                             onChange={(e) => setSelectedService(prev => ({ ...prev, hero_subtitle: e.target.value }))}
                                             rows={3}
-                                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CTA Text</label>
+                                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">CTA Text</label>
                                             <input
                                                 type="text"
                                                 value={selectedService.hero_cta_text}
                                                 onChange={(e) => setSelectedService(prev => ({ ...prev, hero_cta_text: e.target.value }))}
-                                                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CTA Link</label>
+                                            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">CTA Link</label>
                                             <input
                                                 type="text"
                                                 value={selectedService.hero_cta_link}
                                                 onChange={(e) => setSelectedService(prev => ({ ...prev, hero_cta_link: e.target.value }))}
-                                                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                             />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hero Image</label>
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => e.target.files[0] && handleImageUpload("hero_image", e.target.files[0])}
-                                                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
-                                            />
-                                        </div>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hero Image</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => e.target.files[0] && handleImageUpload("hero_image", e.target.files[0])}
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-all"
+                                        />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hero Background</label>
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => e.target.files[0] && handleImageUpload("hero_background_image", e.target.files[0])}
-                                                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
-                                            />
-                                        </div>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hero Background</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => e.target.files[0] && handleImageUpload("hero_background_image", e.target.files[0])}
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-all"
+                                        />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Design Settings */}
-                            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Design Settings</h3>
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                                <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-5 flex items-center gap-2">
+                                    <Palette className="w-5 h-5 text-purple-600" />
+                                    Design Settings
+                                </h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Icon</label>
                                         <select
                                             value={selectedService.icon_name}
                                             onChange={(e) => setSelectedService(prev => ({ ...prev, icon_name: e.target.value }))}
-                                            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
+                                            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                         >
                                             {iconOptions.map(i => (
                                                 <option key={i} value={i}>{i}</option>
@@ -1121,7 +1118,7 @@ export default function ServicesSection() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Primary Color</label>
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Primary Color</label>
                                         <div className="flex items-center gap-3">
                                             <input
                                                 type="color"
@@ -1131,65 +1128,62 @@ export default function ServicesSection() {
                                                     primary_color: e.target.value,
                                                     gradient_from: e.target.value
                                                 }))}
-                                                className="w-12 h-12 rounded-lg cursor-pointer"
+                                                className="w-14 h-14 rounded-xl cursor-pointer border-2 border-gray-200 dark:border-gray-700"
                                             />
-                                            <div className="flex-1">
-                                                <input
-                                                    type="text"
-                                                    value={selectedService.primary_color}
-                                                    onChange={(e) => setSelectedService(prev => ({
-                                                        ...prev,
-                                                        primary_color: e.target.value,
-                                                        gradient_from: e.target.value
-                                                    }))}
-                                                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 font-mono text-sm"
-                                                />
-                                            </div>
+                                            <input
+                                                type="text"
+                                                value={selectedService.primary_color}
+                                                onChange={(e) => setSelectedService(prev => ({
+                                                    ...prev,
+                                                    primary_color: e.target.value,
+                                                    gradient_from: e.target.value
+                                                }))}
+                                                className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                            />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gradient Colors</label>
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className="flex-1">
-                                                <div className="text-xs text-gray-500 mb-1">From</div>
-                                                <div className="flex items-center gap-2">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Gradient Colors</label>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-2 font-medium">From</div>
+                                                <div className="flex items-center gap-3">
                                                     <input
                                                         type="color"
                                                         value={selectedService.gradient_from}
                                                         onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_from: e.target.value }))}
-                                                        className="w-8 h-8 rounded cursor-pointer"
+                                                        className="w-12 h-12 rounded-xl cursor-pointer border-2 border-gray-200 dark:border-gray-700"
                                                     />
                                                     <input
                                                         type="text"
                                                         value={selectedService.gradient_from}
                                                         onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_from: e.target.value }))}
-                                                        className="flex-1 px-2 w-26 py-1 border border-gray-200 dark:border-gray-700 rounded text-sm font-mono"
+                                                        className="flex-1 px-3 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-sm font-mono bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                     />
                                                 </div>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-gray-400" />
-                                            <div className="flex-1">
-                                                <div className="text-xs text-gray-500 mb-1">To</div>
-                                                <div className="flex items-center gap-2">
+                                            <div>
+                                                <div className="text-xs text-gray-600 dark:text-gray-400 mb-2 font-medium">To</div>
+                                                <div className="flex items-center gap-3">
                                                     <input
                                                         type="color"
                                                         value={selectedService.gradient_to}
                                                         onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_to: e.target.value }))}
-                                                        className="w-8 h-8 rounded cursor-pointer"
+                                                        className="w-12 h-12 rounded-xl cursor-pointer border-2 border-gray-200 dark:border-gray-700"
                                                     />
                                                     <input
                                                         type="text"
                                                         value={selectedService.gradient_to}
                                                         onChange={(e) => setSelectedService(prev => ({ ...prev, gradient_to: e.target.value }))}
-                                                        className="flex-1 px-2 w-24 py-1 border border-gray-200 dark:border-gray-700 rounded text-sm font-mono"
+                                                        className="flex-1 px-3 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-xl text-sm font-mono bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div
-                                            className="h-20 rounded-lg mt-2 border border-gray-200 dark:border-gray-700"
+                                            className="h-24 rounded-xl mt-4 border-2 border-gray-200 dark:border-gray-700 shadow-inner"
                                             style={{
                                                 background: `linear-gradient(90deg, ${selectedService.gradient_from}, ${selectedService.gradient_to})`
                                             }}
@@ -1201,20 +1195,23 @@ export default function ServicesSection() {
 
                         {/* Right Panel - Sections */}
                         <div className="lg:col-span-2">
-                            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 mb-6">
+                            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm mb-6">
                                 <div className="flex items-center justify-between mb-6">
                                     <div>
-                                        <h3 className="font-bold text-gray-900 dark:text-white text-lg">Content Sections</h3>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage sections and their content</p>
+                                        <h3 className="font-bold text-gray-900 dark:text-white text-xl flex items-center gap-2">
+                                            <Layers className="w-6 h-6 text-purple-600" />
+                                            Content Sections
+                                        </h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Manage sections and their content</p>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 flex-wrap">
                                         {sectionTypes.map((type) => (
                                             <button
                                                 key={type.id}
                                                 onClick={() => addSection(type.id)}
-                                                className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                                className="px-4 py-2 border-2 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400 rounded-xl text-sm font-semibold hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all"
                                             >
-                                                Add {type.label}
+                                                + {type.label}
                                             </button>
                                         ))}
                                     </div>
@@ -1222,17 +1219,17 @@ export default function ServicesSection() {
 
                                 <div className="space-y-6">
                                     {selectedService.sections.map((section, sIdx) => (
-                                        <div key={section.id || sIdx} className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+                                        <div key={section.id || sIdx} className="border-2 border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden hover:border-purple-300 dark:hover:border-purple-700 transition-all">
                                             {/* Section Header */}
-                                            <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-                                                <div className="flex items-center justify-between mb-3">
+                                            <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800/50 px-5 py-4 border-b-2 border-gray-200 dark:border-gray-800">
+                                                <div className="flex items-center justify-between mb-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                                                            <Layers className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                                                            <Layers className="w-5 h-5 text-white" />
                                                         </div>
                                                         <div>
-                                                            <h4 className="font-medium text-gray-900 dark:text-white">{section.title}</h4>
-                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                            <h4 className="font-bold text-gray-900 dark:text-white text-base">{section.title}</h4>
+                                                            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium mt-0.5">
                                                                 {section.section_type} • {section.content?.length || 0} items
                                                             </p>
                                                         </div>
@@ -1240,45 +1237,45 @@ export default function ServicesSection() {
                                                     <div className="flex items-center gap-2">
                                                         <button
                                                             onClick={() => addItem(sIdx)}
-                                                            className="px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 transition-colors"
+                                                            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl text-sm font-semibold hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/30"
                                                         >
-                                                            Add Item
+                                                            + Add Item
                                                         </button>
                                                         <button
                                                             onClick={() => deleteSection(sIdx)}
-                                                            className="px-3 py-1.5 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                                            className="px-4 py-2 border-2 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                                                         >
                                                             Delete
                                                         </button>
                                                     </div>
                                                 </div>
 
-                                                {/* Section Settings - ALL FIELDS */}
+                                                {/* Section Settings */}
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Title</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Title</label>
                                                         <input
                                                             type="text"
                                                             value={section.title || ""}
                                                             onChange={(e) => updateSectionField(sIdx, "title", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Subtitle</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Subtitle</label>
                                                         <input
                                                             type="text"
                                                             value={section.subtitle || ""}
                                                             onChange={(e) => updateSectionField(sIdx, "subtitle", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Layout Style</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Layout Style</label>
                                                         <select
                                                             value={section.layout_style || "default"}
                                                             onChange={(e) => updateSectionField(sIdx, "layout_style", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         >
                                                             {layoutStyles.map(style => (
                                                                 <option key={style.id} value={style.id}>{style.label}</option>
@@ -1286,59 +1283,59 @@ export default function ServicesSection() {
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Background Image</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Background Image</label>
                                                         <input
                                                             type="file"
                                                             accept="image/*"
                                                             onChange={(e) => e.target.files[0] && handleImageUpload("section_bg", e.target.files[0], sIdx)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Primary CTA Text</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Primary CTA Text</label>
                                                         <input
                                                             type="text"
                                                             value={section.cta_text || ""}
                                                             onChange={(e) => updateSectionField(sIdx, "cta_text", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Primary CTA Link</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Primary CTA Link</label>
                                                         <input
                                                             type="text"
                                                             value={section.cta_link || ""}
                                                             onChange={(e) => updateSectionField(sIdx, "cta_link", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Secondary CTA Text</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Secondary CTA Text</label>
                                                         <input
                                                             type="text"
                                                             value={section.secondary_cta_text || ""}
                                                             onChange={(e) => updateSectionField(sIdx, "secondary_cta_text", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Secondary CTA Link</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Secondary CTA Link</label>
                                                         <input
                                                             type="text"
                                                             value={section.secondary_cta_link || ""}
                                                             onChange={(e) => updateSectionField(sIdx, "secondary_cta_link", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
 
                                             {/* Section Content Items */}
-                                            <div className="p-4 space-y-3">
+                                            <div className="p-5 space-y-3 bg-white dark:bg-gray-900">
                                                 {section.content.map((item, iIdx) => (
-                                                    <div key={item.tempId || item.id || iIdx} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900">
-                                                        <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
-                                                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{iIdx + 1}</span>
+                                                    <div key={item.tempId || item.id || iIdx} className="flex items-start gap-3 p-4 border-2 border-gray-200 dark:border-gray-800 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:border-purple-300 dark:hover:border-purple-700 transition-all">
+                                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-purple-500/30">
+                                                            <span className="text-sm font-bold text-white">{iIdx + 1}</span>
                                                         </div>
 
                                                         <div className="flex-1">
@@ -1348,7 +1345,7 @@ export default function ServicesSection() {
                                                                         <select
                                                                             value={item.icon_name || "CheckCircle"}
                                                                             onChange={(e) => updateItem(sIdx, iIdx, "icon_name", e.target.value)}
-                                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                            className="w-full px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         >
                                                                             {iconOptions.map(icon => (
                                                                                 <option key={icon} value={icon}>{icon}</option>
@@ -1356,19 +1353,19 @@ export default function ServicesSection() {
                                                                         </select>
                                                                     </div>
                                                                     <input
-                                                                        className="col-span-3 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-3 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.title || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)}
                                                                         placeholder="Title"
                                                                     />
                                                                     <input
-                                                                        className="col-span-4 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-4 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.description || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)}
                                                                         placeholder="Description"
                                                                     />
                                                                     <input
-                                                                        className="col-span-2 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-2 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.highlight || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "highlight", e.target.value)}
                                                                         placeholder="Highlight"
@@ -1390,7 +1387,7 @@ export default function ServicesSection() {
                                                                         <select
                                                                             value={item.icon_name || "TrendingUp"}
                                                                             onChange={(e) => updateItem(sIdx, iIdx, "icon_name", e.target.value)}
-                                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                            className="w-full px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         >
                                                                             {iconOptions.map(icon => (
                                                                                 <option key={icon} value={icon}>{icon}</option>
@@ -1398,19 +1395,19 @@ export default function ServicesSection() {
                                                                         </select>
                                                                     </div>
                                                                     <input
-                                                                        className="col-span-3 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-3 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.value || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "value", e.target.value)}
                                                                         placeholder="Value"
                                                                     />
                                                                     <input
-                                                                        className="col-span-4 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-5 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.label || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "label", e.target.value)}
                                                                         placeholder="Label"
                                                                     />
                                                                     <input
-                                                                        className="col-span-2 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-2 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.trend || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "trend", e.target.value)}
                                                                         placeholder="Trend"
@@ -1421,16 +1418,16 @@ export default function ServicesSection() {
                                                             {section.section_type === "process" && (
                                                                 <div className="grid grid-cols-12 gap-2">
                                                                     <input
-                                                                        className="col-span-1 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-1 px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.step_number || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "step_number", e.target.value)}
-                                                                        placeholder="Step #"
+                                                                        placeholder="#"
                                                                     />
                                                                     <div className="col-span-2">
                                                                         <select
                                                                             value={item.icon_name || "Clock"}
                                                                             onChange={(e) => updateItem(sIdx, iIdx, "icon_name", e.target.value)}
-                                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                            className="w-full px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         >
                                                                             {iconOptions.map(icon => (
                                                                                 <option key={icon} value={icon}>{icon}</option>
@@ -1438,19 +1435,19 @@ export default function ServicesSection() {
                                                                         </select>
                                                                     </div>
                                                                     <input
-                                                                        className="col-span-3 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-3 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.title || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)}
                                                                         placeholder="Title"
                                                                     />
                                                                     <input
-                                                                        className="col-span-4 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-4 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.description || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)}
                                                                         placeholder="Description"
                                                                     />
                                                                     <input
-                                                                        className="col-span-1 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-1 px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.stats || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "stats", e.target.value)}
                                                                         placeholder="Stats"
@@ -1472,7 +1469,7 @@ export default function ServicesSection() {
                                                                         <select
                                                                             value={item.icon_name || "Globe"}
                                                                             onChange={(e) => updateItem(sIdx, iIdx, "icon_name", e.target.value)}
-                                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                            className="w-full px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         >
                                                                             {iconOptions.map(icon => (
                                                                                 <option key={icon} value={icon}>{icon}</option>
@@ -1480,25 +1477,25 @@ export default function ServicesSection() {
                                                                         </select>
                                                                     </div>
                                                                     <input
-                                                                        className="col-span-3 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-3 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.title || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "title", e.target.value)}
                                                                         placeholder="Title"
                                                                     />
                                                                     <input
-                                                                        className="col-span-3 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-3 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.description || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "description", e.target.value)}
                                                                         placeholder="Description"
                                                                     />
                                                                     <input
-                                                                        className="col-span-2 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-2 px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.stats || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "stats", e.target.value)}
                                                                         placeholder="Stats"
                                                                     />
                                                                     <input
-                                                                        className="col-span-1 px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="col-span-1 px-2 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.link || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "link", e.target.value)}
                                                                         placeholder="Link"
@@ -1508,13 +1505,13 @@ export default function ServicesSection() {
                                                                             type="color"
                                                                             value={item.color_from || colorPalette.primary}
                                                                             onChange={(e) => updateItem(sIdx, iIdx, "color_from", e.target.value)}
-                                                                            className="w-8 h-8 rounded"
+                                                                            className="w-8 h-8 rounded cursor-pointer"
                                                                         />
                                                                         <input
                                                                             type="color"
                                                                             value={item.color_to || colorPalette.accent}
                                                                             onChange={(e) => updateItem(sIdx, iIdx, "color_to", e.target.value)}
-                                                                            className="w-8 h-8 rounded"
+                                                                            className="w-8 h-8 rounded cursor-pointer"
                                                                         />
                                                                     </div>
                                                                 </div>
@@ -1523,13 +1520,13 @@ export default function ServicesSection() {
                                                             {section.section_type === "faq" && (
                                                                 <div className="space-y-2">
                                                                     <input
-                                                                        className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                                         value={item.question || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "question", e.target.value)}
                                                                         placeholder="Question"
                                                                     />
                                                                     <textarea
-                                                                        className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                                        className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
                                                                         value={item.answer || ""}
                                                                         onChange={(e) => updateItem(sIdx, iIdx, "answer", e.target.value)}
                                                                         placeholder="Answer"
@@ -1540,8 +1537,8 @@ export default function ServicesSection() {
                                                         </div>
 
                                                         <button
-                                                            onClick={() => deleteItem(sIdx, iIdx)}  // Pass section index and item index
-                                                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors shrink-0"
+                                                            onClick={() => deleteItem(sIdx, iIdx)}
+                                                            className="p-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all shrink-0 border-2 border-red-200 dark:border-red-800"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
                                                         </button>
@@ -1552,18 +1549,20 @@ export default function ServicesSection() {
                                     ))}
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 ) : (
+
                     /* Media Tab */
-                    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-6">Media Gallery</h3>
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                        <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-6 flex items-center gap-2">
+                            <ImageIcon className="w-6 h-6 text-purple-600" />
+                            Media Gallery
+                        </h3>
 
                         {/* Add Media */}
-                        <div className="mb-6 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-3">Add Media Files</h4>
+                        <div className="mb-8 p-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:border-purple-400 dark:hover:border-purple-600 transition-all">
+                            <h4 className="font-semibold text-gray-900 dark:text-white mb-4 text-base">Add Media Files</h4>
                             <div className="flex items-center gap-3">
                                 <input
                                     type="file"
@@ -1572,28 +1571,29 @@ export default function ServicesSection() {
                                     onChange={(e) => {
                                         Array.from(e.target.files).forEach(file => addMediaFile(file))
                                     }}
-                                    className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg"
+                                    className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-all"
                                 />
                                 <button
                                     onClick={() => document.querySelector('input[type="file"]').click()}
-                                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all font-semibold shadow-lg shadow-purple-500/30"
                                 >
                                     Upload
                                 </button>
                             </div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-3 flex items-center gap-2">
+                                <ImageIcon className="w-4 h-4" />
                                 Upload images or videos for this service. Files will be saved to service_media table.
                             </p>
                         </div>
 
                         {/* Media Grid */}
                         {mediaFiles.length > 0 && (
-                            <div className="space-y-4">
-                                <h4 className="font-medium text-gray-900 dark:text-white">New Media Files ({mediaFiles.length})</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-5">
+                                <h4 className="font-semibold text-gray-900 dark:text-white text-base">New Media Files ({mediaFiles.length})</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                                     {mediaFiles.map((media, index) => (
-                                        <div key={media.id} className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-                                            <div className="h-48 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                        <div key={media.id} className="border-2 border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden hover:border-purple-300 dark:hover:border-purple-700 transition-all shadow-sm hover:shadow-md">
+                                            <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
                                                 {media.media_type === 'image' ? (
                                                     <img
                                                         src={media.preview}
@@ -1602,39 +1602,41 @@ export default function ServicesSection() {
                                                     />
                                                 ) : (
                                                     <div className="text-center">
-                                                        <Video className="w-12 h-12 mx-auto text-gray-400" />
-                                                        <p className="text-sm text-gray-500 mt-2">Video File</p>
+                                                        <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                                            <ImageIcon className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                                                        </div>
+                                                        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Video File</p>
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="p-4">
+                                            <div className="p-5 bg-white dark:bg-gray-900">
                                                 <div className="space-y-3">
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Alt Text</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Alt Text</label>
                                                         <input
                                                             type="text"
                                                             value={media.alt_text}
                                                             onChange={(e) => updateMediaField(index, "alt_text", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                             placeholder="Image description"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Caption</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Caption</label>
                                                         <input
                                                             type="text"
                                                             value={media.caption}
                                                             onChange={(e) => updateMediaField(index, "caption", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                             placeholder="Optional caption"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs text-gray-500 mb-1">Media Type</label>
+                                                        <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Media Type</label>
                                                         <select
                                                             value={media.media_type}
                                                             onChange={(e) => updateMediaField(index, "media_type", e.target.value)}
-                                                            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded"
+                                                            className="w-full px-3 py-2 text-sm border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                                         >
                                                             <option value="image">Image</option>
                                                             <option value="video">Video</option>
@@ -1642,7 +1644,7 @@ export default function ServicesSection() {
                                                     </div>
                                                     <button
                                                         onClick={() => removeMediaFile(index)}
-                                                        className="w-full px-3 py-1.5 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                                        className="w-full px-4 py-2.5 border-2 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                                                     >
                                                         Remove
                                                     </button>
@@ -1654,15 +1656,15 @@ export default function ServicesSection() {
                             </div>
                         )}
 
-                        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                                <strong>Note:</strong> Media files uploaded here will be saved to the service_media table with columns:
+                        <div className="mt-8 p-5 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-2xl">
+                            <p className="text-sm text-blue-900 dark:text-blue-300 font-medium">
+                                <strong className="font-bold">Note:</strong> Media files uploaded here will be saved to the service_media table with columns:
                                 id, service_id, public_id, url, media_type, alt_text, caption, created_at
                             </p>
                         </div>
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     )
 }
