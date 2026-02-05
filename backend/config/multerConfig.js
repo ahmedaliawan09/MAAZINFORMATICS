@@ -3,12 +3,13 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "./cloudinaryConfig.js";
 
-// Configure Cloudinary with timeout
+// Configure Cloudinary with extended timeout
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
-    timeout: 60000, // 60 seconds timeout
+    timeout: 120000, // 120 seconds timeout (2 minutes)
+    upload_timeout: 120000,
 });
 
 const storage = new CloudinaryStorage({
@@ -19,10 +20,11 @@ const storage = new CloudinaryStorage({
             allowed_formats: ["jpg", "png", "jpeg", "webp"],
             public_id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             transformation: [
-                { width: 1200, crop: "limit", quality: "auto" }
+                { width: 1200, crop: "limit", quality: 80 } // Fixed quality instead of auto
             ],
             resource_type: "auto",
-            timeout: 60000 // 60 seconds for each upload
+            timeout: 120000, // 120 seconds for each upload
+            chunk_size: 6000000 // 6MB chunks for better reliability
         };
     },
 });
@@ -37,13 +39,13 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Create multer instance with longer timeout
+// Create multer instance with optimized settings
 const upload = multer({
     storage,
     fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB per file
-        files: 10 // Max 10 files at once
+        fileSize: 3 * 1024 * 1024, // Reduced to 3MB per file for better reliability
+        files: 5 // Reduced to 5 files at once to prevent timeout
     }
 });
 

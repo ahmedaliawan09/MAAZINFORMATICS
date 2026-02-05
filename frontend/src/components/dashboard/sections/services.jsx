@@ -329,7 +329,11 @@ export default function ServicesSection() {
                 {
                     withCredentials: true,
                     headers: { 'Content-Type': 'multipart/form-data' },
-                    timeout: hasImageChanges ? 30000 : 10000
+                    timeout: hasImageChanges ? 120000 : 15000, // 2 minutes for images, 15 seconds for text only
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        console.log(`📤 Upload progress: ${percentCompleted}%`);
+                    }
                 }
             );
 
@@ -361,11 +365,29 @@ export default function ServicesSection() {
         } catch (err) {
             console.error("❌ Save failed:", err);
 
-            if (err.code === 'ECONNABORTED') {
-                setErrorMsg("Request timed out. Please try again with smaller images.");
-            } else {
-                setErrorMsg(err.response?.data?.message || "Save failed");
+            let errorMessage = "Save failed";
+            
+            if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+                errorMessage = "⏱️ Upload timed out. Try these solutions:\n" +
+                    "1. Use smaller images (under 2MB each)\n" +
+                    "2. Upload fewer images at once\n" +
+                    "3. Check your internet connection\n" +
+                    "4. Try saving text changes first, then add images";
+            } else if (err.response?.status === 408) {
+                errorMessage = "⏱️ Cloudinary upload timeout. Please:\n" +
+                    "1. Compress images before uploading\n" +
+                    "2. Use images under 2MB\n" +
+                    "3. Upload one image at a time";
+            } else if (err.response?.status === 413) {
+                errorMessage = "📦 Files too large. Please reduce image sizes to under 2MB each.";
+            } else if (err.response?.data?.message) {
+                errorMessage = err.response.data.message;
             }
+
+            setErrorMsg(errorMessage);
+            
+            // Show user-friendly alert
+            alert(errorMessage);
         } finally {
             setSaving(false);
         }
@@ -498,13 +520,16 @@ export default function ServicesSection() {
         })
     }
 
-    const compressImage = async (file, maxWidth = 1200, quality = 0.8) => {
+    const compressImage = async (file, maxWidth = 1000, quality = 0.6) => {
         return new Promise((resolve, reject) => {
-            if (!file.type.startsWith('image/') || file.size < 1024 * 1024) {
+            // Always compress images larger than 500KB
+            if (!file.type.startsWith('image/') || file.size < 500 * 1024) {
                 console.log("Skipping compression for small or non-image file");
                 resolve(file);
                 return;
             }
+
+            console.log(`🔄 Compressing ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)...`);
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -517,6 +542,7 @@ export default function ServicesSection() {
                         let width = img.width;
                         let height = img.height;
 
+                        // More aggressive resizing
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
@@ -526,37 +552,43 @@ export default function ServicesSection() {
                         canvas.height = height;
 
                         const ctx = canvas.getContext('2d');
+                        // Enable image smoothing for better quality
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
 
                         canvas.toBlob(
                             (blob) => {
                                 if (!blob) {
-                                    console.warn('Compression failed, using original file');
+                                    console.warn('⚠️ Compression failed, using original file');
                                     resolve(file);
                                     return;
                                 }
-                                const compressedFile = new File([blob], file.name, {
+                                const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
                                     type: 'image/jpeg',
                                     lastModified: Date.now(),
                                 });
-                                console.log(`Compressed from ${file.size} to ${compressedFile.size} bytes`);
+                                const originalSize = (file.size / 1024 / 1024).toFixed(2);
+                                const compressedSize = (compressedFile.size / 1024 / 1024).toFixed(2);
+                                const savings = ((1 - compressedFile.size / file.size) * 100).toFixed(0);
+                                console.log(`✅ Compressed: ${originalSize}MB → ${compressedSize}MB (${savings}% smaller)`);
                                 resolve(compressedFile);
                             },
                             'image/jpeg',
                             quality
                         );
                     } catch (error) {
-                        console.error("Canvas compression error:", error);
+                        console.error("❌ Canvas compression error:", error);
                         resolve(file);
                     }
                 };
                 img.onerror = () => {
-                    console.error("Image loading error");
+                    console.error("❌ Image loading error");
                     resolve(file);
                 };
             };
             reader.onerror = () => {
-                console.error("File reading error");
+                console.error("❌ File reading error");
                 resolve(file);
             };
         });
@@ -565,13 +597,25 @@ export default function ServicesSection() {
     const handleImageUpload = async (field, file, sectionIndex = null, itemIndex = null) => {
         if (!file) return;
 
-        console.log(`Uploading ${field}:`, file.name, `Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+        console.log(`📤 Uploading ${field}:`, file.name, `Size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
+        // Check file size before processing
+        if (file.size > 3 * 1024 * 1024) {
+            alert(`⚠️ File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Please use images under 3MB or they will be compressed.`);
+        }
 
         try {
             let processedFile = file;
-            if (file.type.startsWith('image/') && file.size > 1024 * 1024) {
-                console.log("Compressing image...");
-                processedFile = await compressImage(file, 1200, 0.7);
+            // Always compress images larger than 500KB
+            if (file.type.startsWith('image/') && file.size > 500 * 1024) {
+                console.log("🔄 Compressing image...");
+                processedFile = await compressImage(file, 1000, 0.6);
+                
+                // If still too large after compression, compress more aggressively
+                if (processedFile.size > 2 * 1024 * 1024) {
+                    console.log("🔄 File still large, compressing more aggressively...");
+                    processedFile = await compressImage(processedFile, 800, 0.5);
+                }
             }
 
             const objectUrl = URL.createObjectURL(processedFile);

@@ -1,7 +1,8 @@
 "use client"
 import { Menu, X, LayoutGrid, Settings, Users, FileText, BarChart3, HelpCircle, LogOut } from "lucide-react"
 import axios from "axios"
-import { useNavigate } from "react-router-dom";  // ✅ Import theek hai
+import { useNavigate } from "react-router-dom"
+import { clearDashboardTokens } from "../../utils/urlObfuscator"
 
 const navigationItems = [
     { id: "overview", label: "Overview", icon: LayoutGrid },
@@ -13,10 +14,10 @@ const navigationItems = [
     { id: "help", label: "Help", icon: HelpCircle },
 ]
 
-export default function Sidebar({ activeSection, setActiveSection, isOpen, setIsOpen, user }) {
-    const navigate = useNavigate();  // ✅ Ab andar hai – hook rule follow ho raha
+export default function Sidebar({ activeSection, setActiveSection, isOpen, setIsOpen, user, onLogout }) {
+    const navigate = useNavigate()
 
-    const handleLogout = async () => {  // ✅ Ab andar hai
+    const handleLogout = async () => {
         try {
             await axios.post(
                 "http://localhost:5000/api/auth/logout",
@@ -26,8 +27,16 @@ export default function Sidebar({ activeSection, setActiveSection, isOpen, setIs
         } catch (error) {
             console.error("Logout API failed", error);
         } finally {
-            navigate("/", { replace: true });
-            window.location.reload();
+            // Clear obfuscation tokens
+            clearDashboardTokens();
+            
+            // Call parent logout handler if provided
+            if (onLogout) {
+                onLogout();
+            } else {
+                navigate("/", { replace: true });
+                window.location.reload();
+            }
         }
     };
 

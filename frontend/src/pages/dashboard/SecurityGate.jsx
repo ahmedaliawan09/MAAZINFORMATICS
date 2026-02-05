@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Lock, User, Eye, EyeOff, AlertCircle } from "lucide-react"
 import axios from "axios"
+import { encodeDashboardPath } from "../../utils/urlObfuscator"
 
 export default function SecurityGate({ onSuccess }) {
     const [name, setName] = useState("")
@@ -22,7 +23,14 @@ export default function SecurityGate({ onSuccess }) {
                 { name, password },
                 { withCredentials: true }
             )
+            
+            // Generate obfuscated URL before calling onSuccess
+            const obfuscatedPath = encodeDashboardPath('overview');
+            
             onSuccess(res.data.user);
+            
+            // Navigate to obfuscated URL
+            navigate(obfuscatedPath, { replace: true });
         }
         catch (error) {
             setError(error.response?.data?.message || "invalid credentials")
@@ -30,9 +38,6 @@ export default function SecurityGate({ onSuccess }) {
         finally {
             setLoading(false);
         }
-
-
-
     }
 
     return (

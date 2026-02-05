@@ -14,11 +14,12 @@ import Home from "../pages/Home/home"
 import Careers from "../pages/careers/career"
 import Achievements from "../pages/Acheivements/acheivements"
 import Memberships from "../pages/Membership/membership"
-import DashboardPage from "../pages/dashboard/dashboard"
+import DashboardWrapper from "../pages/dashboard/DashboardWrapper"
 import DynamicService from "../pages/services/[slug]"
+
 function AppLayout({ darkMode }) {
     const location = useLocation()
-    const isDashboard = location.pathname.startsWith("/dashboard")
+    const isDashboard = location.pathname.startsWith("/dashboard") || location.pathname.startsWith("/d/")
 
     return (
         <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
@@ -35,8 +36,9 @@ function AppLayout({ darkMode }) {
                 <Route path="/acheivements" element={<Achievements darkMode={darkMode} />} />
                 <Route path="/memberships" element={<Memberships darkMode={darkMode} />} />
 
-                {/* Dashboard handles auth itself */}
-                <Route path="/dashboard-maaz" element={<DashboardPage />} />
+                {/* Dashboard routes - both clean and obfuscated */}
+                <Route path="/dashboard-maaz" element={<DashboardWrapper />} />
+                <Route path="/d/:token/:section" element={<DashboardWrapper />} />
             </Routes>
 
             {!isDashboard && <Footer darkMode={darkMode} />}

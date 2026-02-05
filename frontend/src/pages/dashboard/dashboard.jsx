@@ -5,15 +5,26 @@ import SecurityGate from "./SecurityGate"
 import Sidebar from "../../components/dashboard/sidebar"
 import DashboardContent from "../../components/dashboard/dashboard-content"
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
+import { encodeDashboardPath, decodeDashboardSection, clearDashboardTokens } from "../../utils/urlObfuscator"
 
 export default function DashboardPage() {
     const [activeSection, setActiveSection] = useState("overview")
     const [sidebarOpen, setSidebarOpen] = useState(true)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)  // 👈 NAYA: Initial loading state
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
+    const location = useLocation()
+
+    // Decode section from URL if obfuscated
+    useEffect(() => {
+        const pathParts = location.pathname.split('/');
+        if (pathParts[1] === 'd' && pathParts[3]) {
+            const decodedSection = decodeDashboardSection(pathParts[3]);
+            setActiveSection(decodedSection);
+        }
+    }, [location.pathname])
 
     const checkAuth = async () => {
         try {
@@ -69,6 +80,21 @@ export default function DashboardPage() {
         setLoading(false)
     }
 
+    // Handle section change with URL obfuscation
+    const handleSectionChange = (section) => {
+        setActiveSection(section);
+        const obfuscatedPath = encodeDashboardPath(section);
+        navigate(obfuscatedPath, { replace: true });
+    }
+
+    // Handle logout - clear tokens
+    const handleLogout = () => {
+        clearDashboardTokens();
+        setIsAuthenticated(false);
+        setUser(null);
+        navigate('/');
+    }
+
     // 👇 YE CHANGE SABSE IMPORTANT HAI
     // Agar loading chal rahi hai → kuch mat dikhao (ya spinner dikha sakte ho)
     if (loading) {
@@ -89,10 +115,11 @@ export default function DashboardPage() {
         <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <Sidebar
                 activeSection={activeSection}
-                setActiveSection={setActiveSection}
+                setActiveSection={handleSectionChange}
                 isOpen={sidebarOpen}
                 setIsOpen={setSidebarOpen}
                 user={user}
+                onLogout={handleLogout}
             />
             <DashboardContent activeSection={activeSection} sidebarOpen={sidebarOpen} />
         </div>
